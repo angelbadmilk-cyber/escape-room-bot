@@ -27,15 +27,10 @@ ITEMS = {
         "description": "La corona del rey Aldric. Rota, pero aún valiosa.",
         "image": "https://i.ibb.co/67jxz72t/objeto-corona-rota.jpg",
     },
-    "pergamino": {
-        "name": "📜 Pergamino de la reina",
-        "description": "Una página arrancada del diario de la reina. La tinta aún es legible.",
-        "image": "https://i.ibb.co/ns7hcy6v/objeto-pergamino.jpg",
-    },
 }
 
 
-ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso", "corona", "pergamino"]
+ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso", "corona"]
 
 TOTAL_ITEMS = len(ITEMS_ORDER)
 

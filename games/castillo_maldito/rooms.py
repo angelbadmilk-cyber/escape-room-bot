@@ -1,7 +1,4 @@
 # Habitaciones del juego: Castillo Maldito.
-#
-# Versión con formato HTML, finales alternativos, objetos combinables
-# y diarios coleccionables.
 
 
 START_ROOM = "intro"
@@ -83,9 +80,9 @@ ROOMS = {
             },
             {
                 "label": "🔥 Iluminar las piedras con la antorcha",
-                "callback": "flag:pergamino",
+                "callback": "diary:get:pagina_reina",
                 "requires_flag": "antorcha",
-                "hide_if_flag": "pergamino",
+                "hide_if_flag": "pagina_reina",
             },
             {
                 "label": "👣 Seguir un ruido extraño",
@@ -115,11 +112,6 @@ ROOMS = {
             {
                 "label": "⬅️ Volver a la entrada",
                 "to_room": "entrada",
-            },
-            {
-                "label": "📖 Leer la inscripción de la fuente",
-                "callback": "diary:get:pagina_reina",
-                "hide_if_flag": "pagina_reina",
             },
             {
                 "label": "🔍 Buscar en la fuente",

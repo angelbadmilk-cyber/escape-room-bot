@@ -9,28 +9,6 @@ from games import registry
 logger = logging.getLogger(__name__)
 
 
-_GOTHIC_MAP = str.maketrans(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-    "\U0001d56c\U0001d56d\U0001d56e\U0001d56f\U0001d570"
-    "\U0001d571\U0001d572\U0001d573\U0001d574\U0001d575"
-    "\U0001d576\U0001d577\U0001d578\U0001d579\U0001d57a"
-    "\U0001d57b\U0001d57c\U0001d57d\U0001d57e\U0001d57f"
-    "\U0001d580\U0001d581\U0001d582\U0001d583\U0001d584"
-    "\U0001d585\U0001d586\U0001d587\U0001d588\U0001d589"
-    "\U0001d58a\U0001d58b\U0001d58c\U0001d58d\U0001d58e"
-    "\U0001d58f\U0001d590\U0001d591\U0001d592\U0001d593"
-    "\U0001d594\U0001d595\U0001d596\U0001d597\U0001d598"
-    "\U0001d599\U0001d59a\U0001d59b\U0001d59c\U0001d59d"
-    "\U0001d59e\U0001d59f",
-)
-
-
-def _to_gothic(text: str) -> str:
-    if not text:
-        return text
-    return text.translate(_GOTHIC_MAP)
-
-
 def get_game_data(game_id: str):
     game = registry.get_game_by_id(game_id)
     if not game:
@@ -64,9 +42,8 @@ def get_room(game_id: str, room_id: str):
 def render_room_text(room: dict) -> str:
     title = room.get("title", "Habitación")
     text = room.get("text", "")
-    gothic_title = _to_gothic(title)
     return (
-        f"<b>❖ {gothic_title} ❖</b>\n"
+        f"<b>❖ {title} ❖</b>\n"
         "━━━━━━━━━━━━━━━━\n\n"
         f"{text}"
     )

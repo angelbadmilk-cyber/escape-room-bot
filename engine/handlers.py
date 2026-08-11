@@ -28,43 +28,13 @@ from games.registry import (
 logger = logging.getLogger(__name__)
 
 
-# Modo de formato: HTML permite negritas, cursivas, etc.
 PARSE_MODE = "HTML"
-
-
-# Tabla de conversión de letras ASCII a caracteres góticos Unicode (Fraktur Bold).
-# Solo convierte letras; los números, espacios y símbolos se mantienen igual.
-_GOTHIC_MAP = str.maketrans(
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-    "\U0001d56c\U0001d56d\U0001d56e\U0001d56f\U0001d570"
-    "\U0001d571\U0001d572\U0001d573\U0001d574\U0001d575"
-    "\U0001d576\U0001d577\U0001d578\U0001d579\U0001d57a"
-    "\U0001d57b\U0001d57c\U0001d57d\U0001d57e\U0001d57f"
-    "\U0001d580\U0001d581\U0001d582\U0001d583\U0001d584"
-    "\U0001d585\U0001d586\U0001d587\U0001d588\U0001d589"
-    "\U0001d58a\U0001d58b\U0001d58c\U0001d58d\U0001d58e"
-    "\U0001d58f\U0001d590\U0001d591\U0001d592\U0001d593"
-    "\U0001d594\U0001d595\U0001d596\U0001d597\U0001d598"
-    "\U0001d599\U0001d59a\U0001d59b\U0001d59c\U0001d59d"
-    "\U0001d59e\U0001d59f",
-)
-
-
-def _to_gothic(text: str) -> str:
-    """
-    Convierte texto normal a caracteres góticos Unicode (Fraktur Bold).
-    Solo convierte letras; el resto de caracteres se mantienen igual.
-    """
-    if not text:
-        return text
-    return text.translate(_GOTHIC_MAP)
 
 
 MAIN_MENU_IMAGE = "https://i.ibb.co/Kx1M8prZ/01-portada-castillo.jpg"
 
-# Título del menú en estilo gótico para máxima atmósfera medieval.
 MAIN_MENU_TEXT = (
-    f"<b>{_to_gothic('CASTILLO MALDITO')}</b>\n\n"
+    "<b>🏰 CASTILLO MALDITO</b>\n\n"
     "La niebla se arrastra a tus pies.\n"
     "Las puertas del castillo se abren ante ti.\n"
     "¿Serás capaz de escapar?\n\n"
@@ -72,6 +42,7 @@ MAIN_MENU_TEXT = (
     "🎮 <b>Jugar</b> - Continúa tu última partida\n"
     "🧭 <b>Elegir juego</b> - Cambia de aventura\n"
     "🎒 <b>Estado</b> - Ver tus objetos y progreso\n"
+    "📖 <b>Diario</b> - Leer tus páginas encontradas\n"
     "📖 <b>Cómo jugar</b> - Instrucciones\n"
     "📊 <b>Progreso</b> - Información del progreso\n"
     "❓ <b>Ayuda</b> - Ver ayuda"
@@ -565,8 +536,6 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if game_manager.check_puzzle_code(puzzle, user_code):
         _clear_waiting_code(context)
 
-        # Definimos user aquí, antes de cualquier bloque condicional,
-        # para evitar la advertencia de Pylance.
         user = _get_user(update)
 
         success_flag = puzzle.get("success_flag")
