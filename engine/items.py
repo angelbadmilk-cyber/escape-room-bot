@@ -1,10 +1,4 @@
 # Definición de objetos del juego Castillo Maldito.
-#
-# IMPORTANTE:
-# - Reemplaza PEGA_AQUI_LA_URL_DE_LA_LLAVE_OXIDADA por la URL de tu imagen
-#   de la llave oxidada, si ya la tienes.
-# - Reemplaza PEGA_AQUI_LA_URL_DE_LA_CORONA por la URL de tu imagen
-#   de la corona rota.
 
 
 ITEMS = {
@@ -33,10 +27,15 @@ ITEMS = {
         "description": "La corona del rey Aldric. Rota, pero aún valiosa.",
         "image": "https://i.ibb.co/67jxz72t/objeto-corona-rota.jpg",
     },
+    "pergamino": {
+        "name": "📜 Pergamino de la reina",
+        "description": "Una página arrancada del diario de la reina. La tinta aún es legible.",
+        "image": "https://i.ibb.co/ns7hcy6v/objeto-pergamino.jpg",
+    },
 }
 
 
-ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso", "corona"]
+ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso", "corona", "pergamino"]
 
 TOTAL_ITEMS = len(ITEMS_ORDER)
 

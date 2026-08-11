@@ -1,7 +1,8 @@
 # Habitaciones del juego: Castillo Maldito.
 #
-# Versión con historia pulida y finales alternativos.
+# Versión con historia pulida, finales alternativos y objetos combinables.
 # - La corona rota es un objeto opcional en la capilla.
+# - La antorcha revela un pergamino en la muralla.
 # - Final normal: escapar sin la corona.
 # - Final del tesoro: escapar con la corona.
 
@@ -77,11 +78,17 @@ ROOMS = {
             "Quien escribió esto ya no está. Pero su advertencia permanece."
         ),
         "image_url": "https://i.ibb.co/zVPxTSvN/04-muralla.jpg",
-        "hint": "El patio puede tener una torre útil.",
+        "hint": "Si tienes la antorcha, prueba a iluminar las piedras.",
         "buttons": [
             {
                 "label": "⬅️ Volver a la entrada",
                 "to_room": "entrada",
+            },
+            {
+                "label": "🔥 Iluminar las piedras con la antorcha",
+                "callback": "flag:pergamino",
+                "requires_flag": "antorcha",
+                "hide_if_flag": "pergamino",
             },
             {
                 "label": "👣 Seguir un ruido extraño",
