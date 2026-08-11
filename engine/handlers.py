@@ -32,6 +32,11 @@ logger = logging.getLogger(__name__)
 PARSE_MODE = "HTML"
 
 
+# Telegram limita el caption de las fotos a 1024 caracteres.
+# Por seguridad, si el texto supera este umbral lo enviamos separado.
+MAX_PHOTO_CAPTION = 1000
+
+
 MAIN_MENU_IMAGE = "https://i.ibb.co/Kx1M8prZ/01-portada-castillo.jpg"
 
 MAIN_MENU_TEXT = (
@@ -131,10 +136,6 @@ def _clear_waiting_code(context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def _castle_thinks(context: ContextTypes.DEFAULT_TYPE, chat_id) -> None:
-    """
-    Hace que el castillo "piense": muestra 'escribiendo...' y pausa
-    brevemente antes de revelar la habitación. Da atmósfera.
-    """
     if not chat_id:
         return
     try:
@@ -236,6 +237,18 @@ async def _render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url: 
         return False
 
     if not photo_url:
+        return await _render_text(context, chat_id, caption, keyboard, fallback_message)
+
+    # Si el texto es demasiado largo para ir sobre la foto (límite de Telegram),
+    # enviamos la imagen sola y el texto completo como mensaje aparte.
+    if len(caption) > MAX_PHOTO_CAPTION:
+        try:
+            await context.bot.send_photo(
+                chat_id=chat_id,
+                photo=photo_url,
+            )
+        except TelegramError:
+            logger.warning("No se pudo enviar la imagen con texto largo.")
         return await _render_text(context, chat_id, caption, keyboard, fallback_message)
 
     ui_chat_id, ui_message_id, ui_message_type = _get_ui_data(context)
@@ -407,7 +420,6 @@ async def _show_room_from_update(update: Update, context, game_id: str, room_id:
         await database.save_progress(user.id, game_id, room_id)
         await _apply_room_enter_flags(context, user.id, game_id, room)
 
-    # El castillo "piensa" antes de revelar la habitación.
     chat = update.effective_chat
     if chat:
         await _castle_thinks(context, chat.id)
@@ -444,7 +456,6 @@ async def _show_room_from_query(query, context, game_id: str, room_id: str) -> N
         await database.save_progress(user.id, game_id, room_id)
         await _apply_room_enter_flags(context, user.id, game_id, room)
 
-    # El castillo "piensa" antes de revelar la habitación.
     chat_id = None
     if query.message:
         chat_id = query.message.chat_id
