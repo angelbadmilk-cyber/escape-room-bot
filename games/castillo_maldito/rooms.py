@@ -409,6 +409,11 @@ ROOMS = {
                 "requires_flag": "llave_hueso",
             },
             {
+                "label": "⭐ Abrazar al rey",
+                "to_room": "salida_secreta",
+                "requires_flags": ["llave_hueso", "pagina_reina", "pagina_rey", "pagina_malachar"],
+            },
+            {
                 "label": "⬅️ Volver a la capilla",
                 "to_room": "capilla",
             },
@@ -486,6 +491,42 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has conseguido el final del tesoro. Prueba /reiniciar para ver el otro final.",
+        "buttons": [
+            {
+                "label": "🔄 Volver a la entrada",
+                "to_room": "entrada",
+            },
+        ],
+    },
+
+    "salida_secreta": {
+        "title": "El regreso del heredero",
+        "text": (
+            "No abres la puerta. No tomas la corona.\n\n"
+            "Caminas hacia el trono.\n\n"
+            "El rey Aldric alza la vista. Sus ojos vacíos se llenan de luz.\n\n"
+            "Por primera vez en siglos, sonríe.\n\n"
+            "<i>\"Te reconocí en cuanto cruzaste el umbral.\"</i>\n\n"
+            "Te arrodillas frente al trono. Las tres páginas que encontraste laten en tu bolsillo, "
+            "y de pronto lo recuerdas todo.\n\n"
+            "La noche en que Malachar te arrancó de los brazos de tu madre. "
+            "Los hechizos que borraron tu nombre. "
+            "Los años perdidos en un mundo que no era el tuyo.\n\n"
+            "La reina escribió: <i>\"Si lees esto, recuerda.\"</i>\n"
+            "El rey escribió: <i>\"Solo un heredero digno puede encontrar la corona.\"</i>\n"
+            "Malachar escribió: <i>\"El rey tenía un heredero. Ese es su error.\"</i>\n\n"
+            "El error de Malachar. Tu regreso.\n\n"
+            "El rey posa su mano huesuda sobre tu cabeza. "
+            "La maldición se rompe. El castillo entero tiembla, no con furia, sino con alivio.\n\n"
+            "Las puertas se abren de par en par. "
+            "Y detrás, en el patio, bajo la luz del amanecer, "
+            "hay una mujer esperándote. Sin rostro, pero con los brazos abiertos.\n\n"
+            "<b>La reina. Tu madre.</b>\n\n"
+            "El castillo no te dejó escapar. Te devolvió a casa.\n\n"
+            "<i>Has conseguido el final verdadero.</i>"
+        ),
+        "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
+        "hint": "Has encontrado el final verdadero. Usa /reiniciar para probar los otros finales.",
         "buttons": [
             {
                 "label": "🔄 Volver a la entrada",
