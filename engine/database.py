@@ -21,8 +21,6 @@ import ssl
 async def _get_pool():
     """
     Devuelve el pool de conexiones, creándolo si no existe todavía.
-    Fuerza SSL y desactiva verificaciones estrictas para evitar problemas
-    con IPv6 y certificados en entornos como Render.
     """
     global _pool
     if _pool is None:
@@ -37,6 +35,7 @@ async def _get_pool():
             max_size=5,
             command_timeout=60,
             ssl=ssl_context,
+            statement_cache_size=0,
         )
     return _pool
 
