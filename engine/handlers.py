@@ -28,24 +28,57 @@ from games.registry import (
 logger = logging.getLogger(__name__)
 
 
+# Modo de formato: HTML permite negritas, cursivas, etc.
+PARSE_MODE = "HTML"
+
+
+# Tabla de conversión de letras ASCII a caracteres góticos Unicode (Fraktur Bold).
+# Solo convierte letras; los números, espacios y símbolos se mantienen igual.
+_GOTHIC_MAP = str.maketrans(
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    "\U0001d56c\U0001d56d\U0001d56e\U0001d56f\U0001d570"
+    "\U0001d571\U0001d572\U0001d573\U0001d574\U0001d575"
+    "\U0001d576\U0001d577\U0001d578\U0001d579\U0001d57a"
+    "\U0001d57b\U0001d57c\U0001d57d\U0001d57e\U0001d57f"
+    "\U0001d580\U0001d581\U0001d582\U0001d583\U0001d584"
+    "\U0001d585\U0001d586\U0001d587\U0001d588\U0001d589"
+    "\U0001d58a\U0001d58b\U0001d58c\U0001d58d\U0001d58e"
+    "\U0001d58f\U0001d590\U0001d591\U0001d592\U0001d593"
+    "\U0001d594\U0001d595\U0001d596\U0001d597\U0001d598"
+    "\U0001d599\U0001d59a\U0001d59b\U0001d59c\U0001d59d"
+    "\U0001d59e\U0001d59f",
+)
+
+
+def _to_gothic(text: str) -> str:
+    """
+    Convierte texto normal a caracteres góticos Unicode (Fraktur Bold).
+    Solo convierte letras; el resto de caracteres se mantienen igual.
+    """
+    if not text:
+        return text
+    return text.translate(_GOTHIC_MAP)
+
+
 MAIN_MENU_IMAGE = "https://i.ibb.co/Kx1M8prZ/01-portada-castillo.jpg"
 
+# Título del menú en estilo gótico para máxima atmósfera medieval.
 MAIN_MENU_TEXT = (
-    "🏰 CASTILLO MALDITO\n\n"
+    f"<b>{_to_gothic('CASTILLO MALDITO')}</b>\n\n"
     "La niebla se arrastra a tus pies.\n"
     "Las puertas del castillo se abren ante ti.\n"
     "¿Serás capaz de escapar?\n\n"
     "Usa los botones para navegar.\n\n"
-    "🎮 Jugar - Continúa tu última partida\n"
-    "🧭 Elegir juego - Cambia de aventura\n"
-    "🎒 Estado - Ver tus objetos y progreso\n"
-    "📖 Cómo jugar - Instrucciones\n"
-    "📊 Progreso - Información del progreso\n"
-    "❓ Ayuda - Ver ayuda"
+    "🎮 <b>Jugar</b> - Continúa tu última partida\n"
+    "🧭 <b>Elegir juego</b> - Cambia de aventura\n"
+    "🎒 <b>Estado</b> - Ver tus objetos y progreso\n"
+    "📖 <b>Cómo jugar</b> - Instrucciones\n"
+    "📊 <b>Progreso</b> - Información del progreso\n"
+    "❓ <b>Ayuda</b> - Ver ayuda"
 )
 
 PROGRESS_TEXT = (
-    "📊 Progreso\n\n"
+    "<b>📊 Progreso</b>\n\n"
     "Tu progreso se guarda automáticamente.\n\n"
     "Cada juego guarda su propio progreso por separado.\n\n"
     "Si quieres empezar todas las aventuras desde el principio, "
@@ -57,20 +90,20 @@ PROGRESS_TEXT = (
 def help_text() -> str:
     games_text = get_available_games_text()
     return (
-        "❓ Ayuda\n\n"
+        "<b>❓ Ayuda</b>\n\n"
         "Este bot está diseñado para juegos de escape room.\n\n"
         "Cuando esté completo:\n"
         "- Podrás avanzar por habitaciones.\n"
         "- Podrás usar botones para interactuar.\n"
         "- Podrás abrir pistas externas.\n"
         "- El bot guardará tu progreso.\n\n"
-        "Botones principales:\n"
-        "🎮 Jugar - Continúa tu última partida\n"
-        "🧭 Elegir juego - Cambia de aventura\n"
-        "🎒 Estado - Ver tus objetos y progreso\n"
-        "📖 Cómo jugar - Instrucciones\n"
-        "📊 Progreso - Información del progreso\n"
-        "❓ Ayuda - Ver ayuda\n\n"
+        "<b>Botones principales:</b>\n"
+        "🎮 <b>Jugar</b> - Continúa tu última partida\n"
+        "🧭 <b>Elegir juego</b> - Cambia de aventura\n"
+        "🎒 <b>Estado</b> - Ver tus objetos y progreso\n"
+        "📖 <b>Cómo jugar</b> - Instrucciones\n"
+        "📊 <b>Progreso</b> - Información del progreso\n"
+        "❓ <b>Ayuda</b> - Ver ayuda\n\n"
         f"{games_text}"
     )
 
@@ -166,6 +199,7 @@ async def _render_text(context: ContextTypes.DEFAULT_TYPE, chat_id, text: str, k
                 message_id=ui_message_id,
                 text=text,
                 reply_markup=keyboard,
+                parse_mode=PARSE_MODE,
             )
             return True
         except BadRequest as error:
@@ -182,6 +216,7 @@ async def _render_text(context: ContextTypes.DEFAULT_TYPE, chat_id, text: str, k
             chat_id=chat_id,
             text=text,
             reply_markup=keyboard,
+            parse_mode=PARSE_MODE,
         )
     except TelegramError:
         logger.warning("No se pudo enviar el mensaje de texto principal.")
@@ -197,6 +232,7 @@ async def _render_text(context: ContextTypes.DEFAULT_TYPE, chat_id, text: str, k
             sent_message = await fallback_message.reply_text(
                 text=text,
                 reply_markup=keyboard,
+                parse_mode=PARSE_MODE,
             )
             if sent_message:
                 _set_ui_data(context, chat_id, sent_message.message_id, "text")
@@ -223,6 +259,7 @@ async def _render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url: 
             media = InputMediaPhoto(
                 media=photo_url,
                 caption=caption,
+                parse_mode=PARSE_MODE,
             )
             await context.bot.edit_message_media(
                 chat_id=ui_chat_id,
@@ -246,6 +283,7 @@ async def _render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url: 
             photo=photo_url,
             caption=caption,
             reply_markup=keyboard,
+            parse_mode=PARSE_MODE,
         )
     except TelegramError:
         logger.warning("No se pudo enviar la imagen principal.")
@@ -437,7 +475,7 @@ async def _handle_games_menu(query, context) -> None:
         return
 
     text = (
-        "🧭 Elige un juego\n\n"
+        "<b>🧭 Elige un juego</b>\n\n"
         "Cada aventura guarda su progreso por separado."
     )
     keyboard = game_selection_keyboard(enabled_games)
@@ -465,16 +503,12 @@ async def _handle_code_request(query, context, puzzle_key: str) -> None:
     text = (
         f"🔑 {prompt}\n\n"
         "Escribe el código y envíalo.\n\n"
-        "Para cancelar, pulsa Volver al menú."
+        "Para cancelar, pulsa <i>Volver al menú</i>."
     )
     await _edit_query_ui(query, context, text, back_to_menu_keyboard())
 
 
 async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    Procesa mensajes de texto.
-    Se usa principalmente para introducir códigos.
-    """
     if context.user_data is None:
         return
 
@@ -531,9 +565,12 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if game_manager.check_puzzle_code(puzzle, user_code):
         _clear_waiting_code(context)
 
+        # Definimos user aquí, antes de cualquier bloque condicional,
+        # para evitar la advertencia de Pylance.
+        user = _get_user(update)
+
         success_flag = puzzle.get("success_flag")
         if success_flag:
-            user = _get_user(update)
             if user:
                 await database.set_flag(user.id, game_id, success_flag)
                 current_flags = _get_current_flags(context)
@@ -541,22 +578,18 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     current_flags.append(success_flag)
                     context.user_data["current_flags"] = current_flags
 
-        # Si el flag es un objeto conocido (llave_hueso, etc.), mostrar imagen épica
         item_image = get_item_image(success_flag) if success_flag else None
         if item_image and not item_image.startswith("PEGA_AQUI"):
             item_name = get_item_name(success_flag)
             item_description = get_item_description(success_flag)
-            caption = f"✅ Has obtenido: {item_name}"
+            caption = f"✅ <b>Has obtenido: {item_name}</b>"
             if item_description:
-                caption += f"\n\n{item_description}"
-            
+                caption += f"\n\n<i>{item_description}</i>"
+
             success_text = puzzle.get("success_text", "")
             if success_text:
                 caption += f"\n\n{success_text}"
 
-            # Si el puzle también te lleva a otra habitación, mostrar la imagen
-            # y luego (cuando pulses cualquier botón) la habitación.
-            # Por simplicidad, mostramos la imagen y NO cambiamos de habitación automáticamente.
             chat = update.effective_chat
             fallback_message = update.effective_message
             if chat:
@@ -567,7 +600,6 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 await _render_photo(context, chat.id, item_image, caption, keyboard, fallback_message)
                 return
 
-        # Si no hay imagen de objeto, comportamiento normal
         success_room = puzzle.get("success_room")
         if success_room:
             game = get_game_by_id(game_id)
@@ -582,11 +614,11 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     await _show_room_from_update(update, context, new_game_id, new_room_id)
                     return
 
-        success_text = puzzle.get("success_text", "✅ Código correcto.")
+        success_text = puzzle.get("success_text", "✅ <b>Código correcto.</b>")
         await _edit_or_send_ui_message(update, context, success_text, back_to_menu_keyboard())
 
     else:
-        error_text = puzzle.get("error_text", "❌ Código incorrecto.")
+        error_text = puzzle.get("error_text", "❌ <b>Código incorrecto.</b>")
 
         room = game_manager.get_room(game_id, room_id)
         game = get_game_by_id(game_id)
@@ -599,7 +631,7 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             text = (
                 f"{error_text}\n\n"
                 f"{room_text}\n\n"
-                "Introduce otro código o usa los botones para navegar."
+                "<i>Introduce otro código o usa los botones para navegar.</i>"
             )
 
             await _edit_or_send_ui_message(update, context, text, keyboard)
@@ -686,7 +718,7 @@ async def restart_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     _clear_progress_keys(context)
     _clear_waiting_code(context)
     text = (
-        "🗑️ Tu progreso se ha reiniciado.\n\n"
+        "🗑️ <b>Tu progreso se ha reiniciado.</b>\n\n"
         "Puedes volver a jugar desde el menú principal."
     )
     await _edit_or_send_ui_message(update, context, text, main_menu_keyboard())

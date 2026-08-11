@@ -7,6 +7,9 @@ from engine.keyboards import inventory_keyboard
 from games.registry import get_game_by_id
 
 
+PARSE_MODE = "HTML"
+
+
 def _get_owned_items(context):
     if context.user_data is None:
         return []
@@ -27,9 +30,9 @@ async def _show_inventory(context, chat_id, fallback_message=None):
 
     if not owned:
         text = (
-            "🎒 Inventario\n\n"
-            "Tu inventario está vacío.\n\n"
-            f"Objetos: 0/{TOTAL_ITEMS}"
+            "<b>🎒 Inventario</b>\n\n"
+            "<i>Tu inventario está vacío.</i>\n\n"
+            f"Objetos: <b>0/{TOTAL_ITEMS}</b>"
         )
         await handlers._render_text(
             context, chat_id, text, inventory_keyboard(), fallback_message
@@ -41,14 +44,17 @@ async def _show_inventory(context, chat_id, fallback_message=None):
         if not item:
             continue
 
-        caption = f"{item['name']}\n\n{item['description']}"
+        caption = f"<b>{item['name']}</b>\n\n<i>{item['description']}</i>"
         image = item.get("image")
         sent = False
 
         if image and not image.startswith("PEGA_AQUI"):
             try:
                 await context.bot.send_photo(
-                    chat_id=chat_id, photo=image, caption=caption
+                    chat_id=chat_id,
+                    photo=image,
+                    caption=caption,
+                    parse_mode=PARSE_MODE,
                 )
                 sent = True
             except Exception:
@@ -56,13 +62,17 @@ async def _show_inventory(context, chat_id, fallback_message=None):
 
         if not sent:
             try:
-                await context.bot.send_message(chat_id=chat_id, text=caption)
+                await context.bot.send_message(
+                    chat_id=chat_id,
+                    text=caption,
+                    parse_mode=PARSE_MODE,
+                )
             except Exception:
                 pass
 
     text = (
-        "🎒 Inventario\n\n"
-        f"Objetos: {len(owned)}/{TOTAL_ITEMS}"
+        "<b>🎒 Inventario</b>\n\n"
+        f"Objetos: <b>{len(owned)}/{TOTAL_ITEMS}</b>"
     )
     await handlers._render_text(
         context, chat_id, text, inventory_keyboard(), fallback_message
@@ -70,9 +80,6 @@ async def _show_inventory(context, chat_id, fallback_message=None):
 
 
 async def inventory_show_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    Botón 🎒 Objetos.
-    """
     query = update.callback_query
     await query.answer()
     chat_id = _get_chat_id(query)
@@ -80,9 +87,6 @@ async def inventory_show_callback(update: Update, context: ContextTypes.DEFAULT_
 
 
 async def inventory_back_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    Botón volver desde el inventario.
-    """
     query = update.callback_query
     await query.answer()
 

@@ -1,10 +1,6 @@
 # Habitaciones del juego: Castillo Maldito.
 #
-# Versión con historia pulida, finales alternativos y objetos combinables.
-# - La corona rota es un objeto opcional en la capilla.
-# - La antorcha revela un pergamino en la muralla.
-# - Final normal: escapar sin la corona.
-# - Final del tesoro: escapar con la corona.
+# Versión con formato HTML: cursivas en las citas importantes.
 
 
 START_ROOM = "intro"
@@ -18,10 +14,10 @@ ROOMS = {
             "No recuerdas el camino, ni cuántas horas llevas caminando bajo la lluvia. "
             "Solo sabes que, cuando el relámpago iluminó la colina, viste el castillo por primera vez.\n\n"
             "Y algo en ti reconoció el lugar.\n\n"
-            "Dicen que nadie entra dos veces al Castillo Maldito.\n"
-            "La primera vez, el castillo te observa.\n"
-            "La segunda, te reconoce.\n"
-            "La tercera... no te deja salir.\n\n"
+            "<i>Dicen que nadie entra dos veces al Castillo Maldito.</i>\n"
+            "<i>La primera vez, el castillo te observa.</i>\n"
+            "<i>La segunda, te reconoce.</i>\n"
+            "<i>La tercera... no te deja salir.</i>\n\n"
             "Las puertas se abren solas cuando te acercas, como si te estuvieran esperando.\n\n"
             "Esta noche, el castillo te ha elegido."
         ),
@@ -47,7 +43,7 @@ ROOMS = {
             "algo viejo que no debería estar vivo.\n\n"
             "A lo lejos, una campana suena una sola vez.\n"
             "No ves ningún campanario.\n\n"
-            "Ya no hay vuelta atrás."
+            "<i>Ya no hay vuelta atrás.</i>"
         ),
         "image_url": "https://i.ibb.co/ks895ZH5/03-entrada.jpg",
         "hint": "Explora la muralla antes de entrar.",
@@ -71,10 +67,10 @@ ROOMS = {
             "Al tocar una de ellas, sientes que está tibia, como si el castillo respirara.\n\n"
             "Entre las grietas, hay un símbolo grabado: una corona atravesada por una espina.\n\n"
             "Debajo, alguien escribió con letra temblorosa:\n\n"
-            "\"El rey no murió. Fue encerrado.\"\n\n"
+            "<i>\"El rey no murió. Fue encerrado.\"</i>\n\n"
             "Y más abajo, con letras aún más pequeñas:\n\n"
-            "\"Malachar, su consejero, selló las puertas con sangre. "
-            "Que el cielo lo perdone, porque yo no puedo.\"\n\n"
+            "<i>\"Malachar, su consejero, selló las puertas con sangre. "
+            "Que el cielo lo perdone, porque yo no puedo.\"</i>\n\n"
             "Quien escribió esto ya no está. Pero su advertencia permanece."
         ),
         "image_url": "https://i.ibb.co/zVPxTSvN/04-muralla.jpg",
@@ -105,12 +101,12 @@ ROOMS = {
             "En el centro, una fuente seca sostiene una figura de piedra sin rostro.\n\n"
             "Alguien le arrancó la cara.\n\n"
             "En la base de la fuente, una inscripción casi borrada:\n\n"
-            "\"Aquí yace la reina, sin nombre, sin rostro, sin descanso.\"\n\n"
+            "<i>\"Aquí yace la reina, sin nombre, sin rostro, sin descanso.\"</i>\n\n"
             "Algo brilla débilmente en el fondo de la fuente seca.\n\n"
             "A la derecha, una torre vigila el patio. "
             "Su puerta de madera está reforzada con hierro oxidado y cerrada con una vieja cerradura.\n\n"
             "A la izquierda, una escalera desciende hacia la oscuridad.\n"
-            "La cripta está demasiado oscura para bajar sin luz."
+            "<i>La cripta está demasiado oscura para bajar sin luz.</i>"
         ),
         "image_url": "https://i.ibb.co/bSbMtKv/05-patio.jpg",
         "hint": "Busca en la fuente para abrir la torre.",
@@ -146,10 +142,10 @@ ROOMS = {
             "Este era el lugar desde donde el consejero Malachar vigilaba al rey encerrado.\n\n"
             "En el primer escalón hay una antorcha apagada, pero la yesca está seca.\n\n"
             "En la pared, alguien grabó una frase con rabia:\n\n"
-            "\"Malachar escondió la verdad en los espejos.\n"
-            "El sello del heredero abrirá la capilla donde descansa la corona.\"\n\n"
+            "<i>\"Malachar escondió la verdad en los espejos. "
+            "El sello del heredero abrirá la capilla donde descansa la corona.\"</i>\n\n"
             "Y debajo, con letra más serena:\n\n"
-            "\"Malachar no sabía que el rey tenía un heredero. Ese es su error.\""
+            "<i>\"Malachar no sabía que el rey tenía un heredero. Ese es su error.\"</i>"
         ),
         "image_url": "https://i.ibb.co/zWFn9vJW/06-torre.jpg",
         "hint": "Enciende la antorcha.",
@@ -173,9 +169,9 @@ ROOMS = {
             "El aire huele a tierra antigua y a metal oxidado. "
             "Las llamas proyectan sombras que se mueven un segundo tarde.\n\n"
             "Hay varios nichos abiertos, como si alguien hubiera removido los cuerpos hace tiempo.\n\n"
-            "Tres nichos fueron profanados.\n"
-            "Tres almas no descansan.\n"
-            "Tres veces su número abrirá la cámara secreta.\n\n"
+            "<i>Tres nichos fueron profanados.</i>\n"
+            "<i>Tres almas no descansan.</i>\n"
+            "<i>Tres veces su número abrirá la cámara secreta.</i>\n\n"
             "Estos son los sirvientes que murieron encerrados con el rey. "
             "Sus nombres fueron borrados de la historia, pero no de la piedra.\n\n"
             "Sobre una lápida hay una hendidura donde se puede introducir un código."
@@ -202,8 +198,8 @@ ROOMS = {
             "cripta_codigo": {
                 "prompt": (
                     "Introduce el código que has descubierto en la cripta.\n\n"
-                    "Pista: Tres nichos fueron profanados. Tres almas no descansan. "
-                    "Tres veces su número abrirá la cámara secreta."
+                    "<i>Pista: Tres nichos fueron profanados. Tres almas no descansan. "
+                    "Tres veces su número abrirá la cámara secreta.</i>"
                 ),
                 "answers": [
                     "333",
@@ -211,8 +207,8 @@ ROOMS = {
                 "success_flag": "camara_secreta_desbloqueada",
                 "success_room": "camara_secreta",
                 "error_text": (
-                    "❌ El código no es válido.\n\n"
-                    "La cripta sigue en silencio."
+                    "❌ <b>El código no es válido.</b>\n\n"
+                    "<i>La cripta sigue en silencio.</i>"
                 ),
             },
         },
@@ -226,8 +222,8 @@ ROOMS = {
             "que no proviene de ninguna fuente visible.\n\n"
             "Las paredes están cubiertas de marcas. Cientos de ellas. Miles.\n\n"
             "Alguien contó los días que pasó encerrado aquí.\n\n"
-            "Cuarenta y dos marcas antes de perder la razón.\n"
-            "Su último número abrirá el pasadizo.\n\n"
+            "<i>Cuarenta y dos marcas antes de perder la razón.</i>\n"
+            "<i>Su último número abrirá el pasadizo.</i>\n\n"
             "Este era el lugar donde encerraron al rey Aldric. "
             "No en una celda, sino en el corazón de su propio castillo.\n\n"
             "Al fondo, un pasadizo estrecho desciende aún más, "
@@ -256,8 +252,8 @@ ROOMS = {
             "camara_codigo": {
                 "prompt": (
                     "Introduce el número que el prisionero grabó antes de perder la razón.\n\n"
-                    "Pista: Cuarenta y dos marcas antes de perder la razón. "
-                    "Su último número abrirá el pasadizo."
+                    "<i>Pista: Cuarenta y dos marcas antes de perder la razón. "
+                    "Su último número abrirá el pasadizo.</i>"
                 ),
                 "answers": [
                     "42",
@@ -265,8 +261,8 @@ ROOMS = {
                 "success_flag": "pasillo_espejos_desbloqueado",
                 "success_room": "pasillo_de_los_espejos",
                 "error_text": (
-                    "❌ La losa no se mueve.\n\n"
-                    "El número no es correcto."
+                    "❌ <b>La losa no se mueve.</b>\n\n"
+                    "<i>El número no es correcto.</i>"
                 ),
             },
         },
@@ -283,7 +279,7 @@ ROOMS = {
             "Estos espejos fueron un regalo de Malachar al rey. "
             "Un regalo envenenado: quien se mira en ellos, ve a los que quedaron atrapados.\n\n"
             "Al final del pasillo hay una puerta pequeña con una cruz de hierro.\n"
-            "Parece necesitar algún tipo de sello para abrirse.\n\n"
+            "<i>Parece necesitar algún tipo de sello para abrirse.</i>\n\n"
             "Entre los fragmentos de vidrio, algo brilla."
         ),
         "image_url": "https://i.ibb.co/rR4NvPxm/09-pasillo-espejos.jpg",
@@ -315,11 +311,11 @@ ROOMS = {
             "En el altar hay una corona rota. "
             "Las velas se encienden solas cuando entras, como si alguien te diera la bienvenida.\n\n"
             "Una voz susurra desde todas partes:\n\n"
-            "\"Solo el verdadero heredero puede abrir el salón del trono.\n"
-            "El código del rey está grabado en su corona.\n"
-            "Búscalo donde solo el digno puede verlo.\"\n\n"
+            "<i>\"Solo el verdadero heredero puede abrir el salón del trono. "
+            "El código del rey está grabado en su corona. "
+            "Búscalo donde solo el digno puede verlo.\"</i>\n\n"
             "En la base del altar, casi oculta por el polvo, hay una inscripción:\n\n"
-            "\"El miedo es la única prisión de la que no puedes escapar.\"\n\n"
+            "<i>\"El miedo es la única prisión de la que no puedes escapar.\"</i>\n\n"
             "El rey Aldric escribió esto antes de morir. Su última enseñanza."
         ),
         "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
@@ -353,8 +349,8 @@ ROOMS = {
             "capilla_codigo": {
                 "prompt": (
                     "Introduce el código del rey.\n\n"
-                    "Pista: El código está grabado en la corona. "
-                    "Pulsa el botón 'Abrir puzle web' para observar la corona de cerca."
+                    "<i>Pista: El código está grabado en la corona. "
+                    "Pulsa el botón 'Abrir puzle web' para observar la corona de cerca.</i>"
                 ),
                 "answers": [
                     "1348",
@@ -362,8 +358,8 @@ ROOMS = {
                 "success_flag": "salon_trono_desbloqueado",
                 "success_room": "salon_trono",
                 "error_text": (
-                    "❌ La capilla no acepta ese código.\n\n"
-                    "Las velas parpadean con fuerza."
+                    "❌ <b>La capilla no acepta ese código.</b>\n\n"
+                    "<i>Las velas parpadean con fuerza.</i>"
                 ),
             },
         },
@@ -377,13 +373,13 @@ ROOMS = {
             "Está vacío, pero el aire pesa como si hubiera cientos de personas mirándote. "
             "Los sirvientes atrapados. Los que nunca pudieron salir.\n\n"
             "En el trono hay una figura sentada, cubierta por una capa raída.\n\n"
-            "El rey Aldric.\n\n"
+            "<b>El rey Aldric.</b>\n\n"
             "No respira. No se mueve. Murió hace siglos, pero la maldición no le permite descansar.\n\n"
             "Sus ojos vacíos te siguen.\n"
             "Y en su mano huesuda sostiene una llave tallada en hueso.\n\n"
             "De pronto, una voz fría llena la sala:\n\n"
-            "\"Responde a mi pregunta, viajero... y la llave será tuya.\n"
-            "Falla... y te quedarás aquí para siempre, como yo.\"\n\n"
+            "<i>\"Responde a mi pregunta, viajero... y la llave será tuya. "
+            "Falla... y te quedarás aquí para siempre, como yo.\"</i>\n\n"
             "Detrás del trono hay una puerta enorme, cerrada con un cerrojo de hueso."
         ),
         "image_url": "https://i.ibb.co/kscGLHh6/11-salon-trono.jpg",
@@ -413,11 +409,11 @@ ROOMS = {
             "salon_acertijo": {
                 "prompt": (
                     "El rey muerto susurra desde el trono:\n\n"
-                    "\"Dime, viajero... ¿qué es lo que nunca podrás escapar de este lugar?\n"
-                    "Lo que te trajo hasta aquí y lo que te seguirá hasta el final.\n"
-                    "Malachar me encerró con cadenas de hierro.\n"
-                    "Pero había una prisión de la que ni él pudo liberarme.\n"
-                    "Recuerda las palabras grabadas en la base del altar de la capilla.\""
+                    "<i>\"Dime, viajero... ¿qué es lo que nunca podrás escapar de este lugar? "
+                    "Lo que te trajo hasta aquí y lo que te seguirá hasta el final. "
+                    "Malachar me encerró con cadenas de hierro. "
+                    "Pero había una prisión de la que ni él pudo liberarme. "
+                    "Recuerda las palabras grabadas en la base del altar de la capilla.\"</i>"
                 ),
                 "answers": [
                     "MIEDO",
@@ -426,16 +422,16 @@ ROOMS = {
                 ],
                 "success_flag": "llave_hueso",
                 "success_text": (
-                    "✅ El rey asiente lentamente.\n\n"
+                    "✅ <b>El rey asiente lentamente.</b>\n\n"
                     "Sus dedos huesudos se abren y dejan caer la llave en tu mano.\n\n"
-                    "\"Has respondido bien. Eres digno de salir.\n"
-                    "Yo... por fin puedo descansar.\"\n\n"
-                    "Has obtenido la llave de hueso."
+                    "<i>\"Has respondido bien. Eres digno de salir. "
+                    "Yo... por fin puedo descansar.\"</i>\n\n"
+                    "<b>Has obtenido la llave de hueso.</b>"
                 ),
                 "error_text": (
-                    "❌ El rey niega con la cabeza.\n\n"
-                    "Su susurro se vuelve más frío.\n"
-                    "\"Esa no es la respuesta. Piensa en la inscripción del altar.\""
+                    "❌ <b>El rey niega con la cabeza.</b>\n\n"
+                    "<i>Su susurro se vuelve más frío.</i>\n"
+                    "<i>\"Esa no es la respuesta. Piensa en la inscripción del altar.\"</i>"
                 ),
             },
         },
@@ -449,13 +445,13 @@ ROOMS = {
             "Luz verdadera. Luz del mundo exterior.\n\n"
             "Cruzas el umbral y sientes el sol en la cara por primera vez "
             "en lo que parece una eternidad.\n\n"
-            "Has escapado del Castillo Maldito.\n\n"
+            "<b>Has escapado del Castillo Maldito.</b>\n\n"
             "Pero mientras sales, escuchas una última voz a tu espalda. "
             "No es amenazante. Es cansada. Agradecida.\n\n"
-            "\"Gracias, viajero. Ahora puedo descansar.\"\n\n"
+            "<i>\"Gracias, viajero. Ahora puedo descansar.\"</i>\n\n"
             "El rey Aldric por fin encuentra la paz que Malachar le negó.\n\n"
             "Si quieres volver a entrar, usa /reiniciar. "
-            "Pero ten cuidado: el castillo te recordará."
+            "Pero ten cuidado: <i>el castillo te recordará.</i>"
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has escapado. Puedes usar /reiniciar para jugar de nuevo.",
@@ -474,9 +470,9 @@ ROOMS = {
             "Cruzas el umbral con la corona rota entre tus manos. "
             "Pesa más de lo que debería, como si cargara con siglos de historia.\n\n"
             "Detrás de ti, la voz del rey Aldric susurra por última vez:\n\n"
-            "\"Llévala lejos. Que el mundo recuerde lo que Malachar hizo aquí.\n"
-            "Y que nadie vuelva a cometer mi mismo error: confiar en quien no debe.\"\n\n"
-            "Sales al amanecer con el tesoro del rey.\n\n"
+            "<i>\"Llévala lejos. Que el mundo recuerde lo que Malachar hizo aquí. "
+            "Y que nadie vuelva a cometer mi mismo error: confiar en quien no debe.\"</i>\n\n"
+            "<b>Sales al amanecer con el tesoro del rey.</b>\n\n"
             "Has escapado del Castillo Maldito... y te llevas su legado.\n\n"
             "Si quieres probar otro final, usa /reiniciar."
         ),
