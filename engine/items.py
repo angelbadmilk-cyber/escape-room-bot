@@ -1,7 +1,10 @@
 # Definición de objetos del juego Castillo Maldito.
 #
-# Si tu imagen de la llave oxidada tiene otra URL,
-# reemplaza el valor de "image" en llave_oxidada.
+# IMPORTANTE:
+# - Reemplaza PEGA_AQUI_LA_URL_DE_LA_LLAVE_OXIDADA por la URL de tu imagen
+#   de la llave oxidada, si ya la tienes.
+# - Reemplaza PEGA_AQUI_LA_URL_DE_LA_CORONA por la URL de tu imagen
+#   de la corona rota.
 
 
 ITEMS = {
@@ -13,7 +16,7 @@ ITEMS = {
     "llave_oxidada": {
         "name": "🗝️ Llave oxidada",
         "description": "Una vieja llave oxidada, cubierta de musgo.",
-        "image": "https://i.ibb.co/8D5ngYv6/objeto-llave-oxidada-patio.jpg",
+        "image": "PEGA_AQUI_LA_URL_DE_LA_LLAVE_OXIDADA",
     },
     "sello_real": {
         "name": "👑 Sello real",
@@ -25,10 +28,15 @@ ITEMS = {
         "description": "Una llave tallada en hueso humano.",
         "image": "https://i.ibb.co/LXgh1Fqk/objeto-llave-hueso.jpg",
     },
+    "corona": {
+        "name": "👑 Corona rota",
+        "description": "La corona del rey Aldric. Rota, pero aún valiosa.",
+        "image": "PEGA_AQUI_LA_URL_DE_LA_CORONA",
+    },
 }
 
 
-ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso"]
+ITEMS_ORDER = ["antorcha", "llave_oxidada", "sello_real", "llave_hueso", "corona"]
 
 TOTAL_ITEMS = len(ITEMS_ORDER)
 

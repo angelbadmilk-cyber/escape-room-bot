@@ -1,8 +1,9 @@
 # Habitaciones del juego: Castillo Maldito.
 #
-# Versión con historia mejorada.
-# Los puzles, objetos y mecánicas no cambian.
-# Solo se han mejorado los textos narrativos.
+# Versión con historia mejorada y finales alternativos.
+# - La corona rota es un objeto opcional en la capilla.
+# - Final normal: escapar sin la corona.
+# - Final del tesoro: escapar con la corona.
 
 
 START_ROOM = "intro"
@@ -327,6 +328,11 @@ ROOMS = {
                 "hide_if_flag": "salon_trono_desbloqueado",
             },
             {
+                "label": "👑 Tomar la corona rota",
+                "callback": "flag:corona",
+                "hide_if_flag": "corona",
+            },
+            {
                 "label": "👑 Entrar al salón del trono",
                 "to_room": "salon_trono",
                 "requires_flag": "salon_trono_desbloqueado",
@@ -380,6 +386,11 @@ ROOMS = {
                 "label": "🗝️ Escuchar la pregunta del rey",
                 "callback": "code:salon_acertijo",
                 "hide_if_flag": "llave_hueso",
+            },
+            {
+                "label": "👑 Escapar con la corona",
+                "to_room": "salida_tesoro",
+                "requires_flags": ["llave_hueso", "corona"],
             },
             {
                 "label": "🚪 Abrir la puerta final",
@@ -442,6 +453,29 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has escapado. Puedes usar /reiniciar para jugar de nuevo.",
+        "buttons": [
+            {
+                "label": "🔄 Volver a la entrada",
+                "to_room": "entrada",
+            },
+        ],
+    },
+
+    "salida_tesoro": {
+        "title": "El final del rey y su tesoro",
+        "text": (
+            "La puerta de hueso se abre lentamente.\n\n"
+            "Cruzas el umbral con la corona rota entre tus manos. "
+            "Pesa más de lo que debería, como si cargara con siglos de historia.\n\n"
+            "Detrás de ti, la voz del rey Aldric susurra por última vez:\n\n"
+            "\"Llévala lejos. Que el mundo recuerde lo que Malachar hizo aquí.\n"
+            "Y que nadie vuelva a cometer mi mismo error: confiar en quien no debe.\"\n\n"
+            "Sales al amanecer con el tesoro del rey.\n\n"
+            "Has escapado del Castillo Maldito... y te llevas su legado.\n\n"
+            "Si quieres probar otro final, usa /reiniciar."
+        ),
+        "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
+        "hint": "Has conseguido el final del tesoro. Prueba /reiniciar para ver el otro final.",
         "buttons": [
             {
                 "label": "🔄 Volver a la entrada",

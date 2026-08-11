@@ -89,9 +89,15 @@ def build_room_keyboard(game: dict, room: dict, flags=None) -> InlineKeyboardMar
         if hide_if_flag and hide_if_flag in flags_set:
             continue
 
-        requires_flag = button.get("requires_flag")
-        if requires_flag and requires_flag not in flags_set:
-            callback_data = f"lock:{requires_flag}"
+        # Reúne todos los flags requeridos (uno o varios).
+        required = []
+        single = button.get("requires_flag")
+        if single:
+            required.append(single)
+        required.extend(button.get("requires_flags", []))
+
+        if required and not all(f in flags_set for f in required):
+            callback_data = f"lock:{required[0]}"
             keyboard.append(
                 [
                     InlineKeyboardButton(
