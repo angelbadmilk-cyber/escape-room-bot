@@ -31,7 +31,7 @@ ITEMS = {
     "corona": {
         "name": "👑 Corona rota",
         "description": "La corona del rey Aldric. Rota, pero aún valiosa.",
-        "image": "https://i.ibb.co/m5rbF6hG/objeto-corona-rota.jpg",
+        "image": "https://i.ibb.co/67jxz72t/objeto-corona-rota.jpg",
     },
 }
 
