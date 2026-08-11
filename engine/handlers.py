@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import traceback
 
@@ -127,6 +128,20 @@ def _clear_waiting_code(context: ContextTypes.DEFAULT_TYPE) -> None:
     if context.user_data is None:
         return
     context.user_data.pop("waiting_code", None)
+
+
+async def _castle_thinks(context: ContextTypes.DEFAULT_TYPE, chat_id) -> None:
+    """
+    Hace que el castillo "piense": muestra 'escribiendo...' y pausa
+    brevemente antes de revelar la habitación. Da atmósfera.
+    """
+    if not chat_id:
+        return
+    try:
+        await context.bot.send_chat_action(chat_id=chat_id, action="typing")
+        await asyncio.sleep(0.9)
+    except TelegramError:
+        pass
 
 
 async def _try_delete_message(context: ContextTypes.DEFAULT_TYPE, message) -> None:
@@ -392,6 +407,11 @@ async def _show_room_from_update(update: Update, context, game_id: str, room_id:
         await database.save_progress(user.id, game_id, room_id)
         await _apply_room_enter_flags(context, user.id, game_id, room)
 
+    # El castillo "piensa" antes de revelar la habitación.
+    chat = update.effective_chat
+    if chat:
+        await _castle_thinks(context, chat.id)
+
     text = game_manager.render_room_text(room)
     flags = _get_current_flags(context)
     keyboard = game_manager.build_room_keyboard(game, room, flags)
@@ -423,6 +443,14 @@ async def _show_room_from_query(query, context, game_id: str, room_id: str) -> N
     if user:
         await database.save_progress(user.id, game_id, room_id)
         await _apply_room_enter_flags(context, user.id, game_id, room)
+
+    # El castillo "piensa" antes de revelar la habitación.
+    chat_id = None
+    if query.message:
+        chat_id = query.message.chat_id
+    elif query.from_user:
+        chat_id = query.from_user.id
+    await _castle_thinks(context, chat_id)
 
     text = game_manager.render_room_text(room)
     flags = _get_current_flags(context)

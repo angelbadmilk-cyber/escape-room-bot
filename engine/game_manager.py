@@ -1,5 +1,6 @@
 import importlib
 import logging
+import random
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -7,6 +8,22 @@ from games import registry
 
 
 logger = logging.getLogger(__name__)
+
+
+# Susurros que el castillo deja oír de vez en cuando.
+WHISPERS = [
+    "...alguien susurra tu nombre desde la pared...",
+    "...sientes una mirada en la nuca...",
+    "...una risa lejana se apaga de golpe...",
+    "...el suelo cruje bajo unos pasos que no son tuyos...",
+    "...una vela se apaga sin razón...",
+    "...oyes un llanto suave al otro lado de la puerta...",
+    "...las cadenas tintinean en alguna parte, muy abajo...",
+    "...una puerta que no existe se cierra de golpe...",
+]
+
+# Probabilidad (0 a 1) de que aparezca un susurro al entrar en una habitación.
+WHISPER_CHANCE = 0.15
 
 
 def get_game_data(game_id: str):
@@ -42,11 +59,18 @@ def get_room(game_id: str, room_id: str):
 def render_room_text(room: dict) -> str:
     title = room.get("title", "Habitación")
     text = room.get("text", "")
-    return (
+
+    base = (
         f"<b>❖ {title} ❖</b>\n"
         "━━━━━━━━━━━━━━━━\n\n"
         f"{text}"
     )
+
+    # A veces el castillo susurra algo.
+    if random.random() < WHISPER_CHANCE:
+        base += f"\n\n<i>{random.choice(WHISPERS)}</i>"
+
+    return base
 
 
 def build_room_keyboard(game: dict, room: dict, flags=None) -> InlineKeyboardMarkup:
