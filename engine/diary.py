@@ -9,6 +9,7 @@ DIARY_PAGES = {
             "del reino, pero veo la envidia en sus ojos. Aldric no lo ve. Yo sí.\n\n"
             "Si lees esto, recuerda: la reina nunca tuvo miedo.\""
         ),
+        "image": "https://i.ibb.co/tw8KyFYv/objeto-pagina-reina.jpg",
     },
     "pagina_rey": {
         "title": "📖 Página del rey",
@@ -17,6 +18,7 @@ DIARY_PAGES = {
             "pero olvida que un rey no muere mientras su pueblo lo recuerde.\n\n"
             "He escondido mi corona y mi código donde solo un heredero digno los encuentre.\""
         ),
+        "image": "https://i.ibb.co/4wBHs4kK/obeto-pagina-rey.jpg",
     },
     "pagina_malachar": {
         "title": "📖 Página de Malachar",
@@ -25,6 +27,7 @@ DIARY_PAGES = {
             "no me obedece: me reclama. Oigo al rey susurrar en los espejos.\n\n"
             "Ya no salgo de la torre. El castillo me ha convertido en su prisionero, como a él.\""
         ),
+        "image": "https://i.ibb.co/fYdRrW8w/objeto-pagina-malachar.jpg",
     },
 }
 
@@ -52,3 +55,10 @@ def get_diary_text(flag):
     if page:
         return page.get("text")
     return ""
+
+
+def get_diary_image(flag):
+    page = DIARY_PAGES.get(flag)
+    if page:
+        return page.get("image")
+    return None

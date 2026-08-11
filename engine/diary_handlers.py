@@ -4,6 +4,7 @@ from telegram.ext import ContextTypes
 from engine import database, handlers
 from engine.diary import (
     DIARY_ORDER,
+    get_diary_image,
     get_diary_text,
     get_diary_title,
     is_diary_page,
@@ -22,6 +23,14 @@ def _get_flags(context):
     return []
 
 
+def _get_chat_id(query):
+    if query.message:
+        return query.message.chat_id
+    if query.from_user:
+        return query.from_user.id
+    return None
+
+
 async def _back_to_room(query, context) -> None:
     game_id = context.user_data.get("current_game") if context.user_data else None
     room_id = context.user_data.get("current_room") if context.user_data else None
@@ -36,6 +45,34 @@ async def _back_to_room(query, context) -> None:
                 [[InlineKeyboardButton("🏰 Menú", callback_data="menu:main")]]
             ),
         )
+
+
+async def _show_page(query, context, flag, extra_line=None) -> None:
+    chat_id = _get_chat_id(query)
+    image = get_diary_image(flag)
+
+    caption = f"<b>{get_diary_title(flag)}</b>\n\n<i>{get_diary_text(flag)}</i>"
+    if extra_line:
+        caption += f"\n\n{extra_line}"
+
+    keyboard = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("📖 Abrir el diario", callback_data="diary:show")],
+            [InlineKeyboardButton("⬅️ Volver", callback_data="diary:back")],
+        ]
+    )
+
+    if image and not image.startswith("PEGA_AQUI"):
+        await handlers._render_photo(
+            context,
+            chat_id,
+            image,
+            caption,
+            keyboard,
+            query.message,
+        )
+    else:
+        await handlers._edit_query_ui(query, context, caption, keyboard)
 
 
 async def diary_get_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -71,20 +108,12 @@ async def diary_get_callback(update: Update, context: ContextTypes.DEFAULT_TYPE)
         flags.append(flag)
         context.user_data["current_flags"] = flags
 
-    text = (
-        f"<b>{get_diary_title(flag)}</b>\n\n"
-        f"<i>{get_diary_text(flag)}</i>\n\n"
-        "📖 <b>Has añadido esta página a tu diario.</b>"
+    await _show_page(
+        query,
+        context,
+        flag,
+        extra_line="📖 <b>Has añadido esta página a tu diario.</b>",
     )
-
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("📖 Abrir el diario", callback_data="diary:show")],
-            [InlineKeyboardButton("⬅️ Volver", callback_data="diary:back")],
-        ]
-    )
-
-    await handlers._edit_query_ui(query, context, text, keyboard)
 
 
 async def diary_show_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -139,19 +168,7 @@ async def diary_read_callback(update: Update, context: ContextTypes.DEFAULT_TYPE
     if not is_diary_page(flag):
         return
 
-    text = (
-        f"<b>{get_diary_title(flag)}</b>\n\n"
-        f"<i>{get_diary_text(flag)}</i>"
-    )
-
-    keyboard = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("📖 Volver al diario", callback_data="diary:show")],
-            [InlineKeyboardButton("⬅️ Volver a la habitación", callback_data="diary:back")],
-        ]
-    )
-
-    await handlers._edit_query_ui(query, context, text, keyboard)
+    await _show_page(query, context, flag)
 
 
 async def diary_back_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
