@@ -68,12 +68,16 @@ def get_room(game_id: str, room_id: str):
 def render_room_text(room: dict) -> str:
     """
     Construye el texto principal de una habitación con formato HTML.
-    El título aparece en negrita y con estilo gótico medieval.
+    El título aparece en negrita, gótico y decorado para destacar más.
     """
     title = room.get("title", "Habitación")
     text = room.get("text", "")
     gothic_title = _to_gothic(title)
-    return f"<b>{gothic_title}</b>\n\n{text}"
+    return (
+        f"<b>❖ {gothic_title} ❖</b>\n"
+        "━━━━━━━━━━━━━━━━\n\n"
+        f"{text}"
+    )
 
 
 def build_room_keyboard(game: dict, room: dict, flags=None) -> InlineKeyboardMarkup:
