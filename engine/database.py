@@ -14,17 +14,29 @@ logger = logging.getLogger(__name__)
 _pool = None
 
 
+import ssl
+
+# ... (el resto de imports arriba se mantiene igual)
+
 async def _get_pool():
     """
     Devuelve el pool de conexiones, creándolo si no existe todavía.
+    Fuerza SSL y desactiva verificaciones estrictas para evitar problemas
+    con IPv6 y certificados en entornos como Render.
     """
     global _pool
     if _pool is None:
+        # Contexto SSL relajado para evitar errores de red en Render
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        
         _pool = await asyncpg.create_pool(
             dsn=DATABASE_URL,
             min_size=1,
             max_size=5,
             command_timeout=60,
+            ssl=ssl_context,
         )
     return _pool
 
