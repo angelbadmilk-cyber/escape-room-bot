@@ -15,6 +15,12 @@ logger = logging.getLogger(__name__)
 PARSE_MODE = "HTML"
 
 
+# Telegram limita el caption de las fotos a 1024 caracteres.
+# Por seguridad, si el texto supera este umbral lo enviamos separado:
+# imagen por un lado, texto completo por otro.
+MAX_PHOTO_CAPTION = 1000
+
+
 def _resolve_photo(photo):
     """
     Convierte la referencia de imagen en algo que Telegram entienda.
@@ -41,6 +47,9 @@ def _resolve_photo(photo):
 async def render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url, caption: str, keyboard, fallback_message=None) -> bool:
     """
     Envía o edita un mensaje con imagen usando formato HTML.
+
+    Si el caption es demasiado largo para Telegram (>1000 caracteres),
+    envía la imagen sola y el texto completo como mensaje aparte.
     """
     if not chat_id:
         return False
@@ -48,6 +57,18 @@ async def render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url, c
     photo = _resolve_photo(photo_url)
 
     if photo is None:
+        return await handlers._render_text(context, chat_id, caption, keyboard, fallback_message)
+
+    # Si el texto es demasiado largo para ir sobre la foto,
+    # enviamos la imagen sola y el texto completo como mensaje aparte.
+    if len(caption) > MAX_PHOTO_CAPTION:
+        try:
+            await context.bot.send_photo(
+                chat_id=chat_id,
+                photo=photo,
+            )
+        except TelegramError:
+            logger.warning("No se pudo enviar la imagen con texto largo.")
         return await handlers._render_text(context, chat_id, caption, keyboard, fallback_message)
 
     ui_chat_id, ui_message_id, ui_message_type = handlers._get_ui_data(context)
