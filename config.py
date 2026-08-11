@@ -38,9 +38,13 @@ _load_env_file()
 TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 
 
-# Archivo de base de datos donde se guarda el progreso.
-# En tu PC se crea en la carpeta del proyecto.
-# En Render se creará en el disco del servicio.
+# Cadena de conexión a la base de datos PostgreSQL (Supabase).
+# En tu PC se lee desde el archivo .env (variable DATABASE_URL).
+# En Render se leerá desde la variable de entorno DATABASE_URL.
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
+
+
+# Archivo de base de datos local (ya no se usa, pero se mantiene por compatibilidad).
 DATABASE_FILE = BASE_DIR / "escape_room.db"
 
 
