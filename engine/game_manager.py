@@ -9,7 +9,6 @@ from games import registry
 logger = logging.getLogger(__name__)
 
 
-# Tabla de conversión de letras ASCII a caracteres góticos Unicode (Fraktur Bold).
 _GOTHIC_MAP = str.maketrans(
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
     "\U0001d56c\U0001d56d\U0001d56e\U0001d56f\U0001d570"
@@ -27,9 +26,6 @@ _GOTHIC_MAP = str.maketrans(
 
 
 def _to_gothic(text: str) -> str:
-    """
-    Convierte texto normal a caracteres góticos Unicode (Fraktur Bold).
-    """
     if not text:
         return text
     return text.translate(_GOTHIC_MAP)
@@ -66,10 +62,6 @@ def get_room(game_id: str, room_id: str):
 
 
 def render_room_text(room: dict) -> str:
-    """
-    Construye el texto principal de una habitación con formato HTML.
-    El título aparece en negrita, gótico y decorado para destacar más.
-    """
     title = room.get("title", "Habitación")
     text = room.get("text", "")
     gothic_title = _to_gothic(title)
@@ -145,6 +137,14 @@ def build_room_keyboard(game: dict, room: dict, flags=None) -> InlineKeyboardMar
                 )
             ]
         )
+    keyboard.append(
+        [
+            InlineKeyboardButton(
+                "📖 Diario",
+                callback_data="diary:show"
+            ),
+        ]
+    )
     keyboard.append(
         [
             InlineKeyboardButton(

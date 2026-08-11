@@ -1,7 +1,5 @@
 import logging
 import os
-import threading
-from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from telegram import BotCommand
 from telegram.error import TelegramError
@@ -36,13 +34,17 @@ from engine.flag_handlers import flag_callback
 from engine.command_list_handlers import commands_list_command
 from engine.game_menu_handlers import game_info_callback, start_game_callback
 from engine.inventory_handlers import inventory_show_callback, inventory_back_callback
+from engine.diary_handlers import (
+    diary_back_callback,
+    diary_get_callback,
+    diary_read_callback,
+    diary_show_callback,
+)
 
 
-# Usamos el renderizador de imágenes mejorado.
 handlers._render_photo = photo_renderer.render_photo
 
 
-# Configuración básica de logs
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -53,43 +55,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-def _start_ping_server():
-    """
-    Inicia un pequeño servidor HTTP en segundo plano
-    para que UptimeRobot pueda hacer ping al servicio
-    y mantenerlo despierto en Render.
-    """
-
-    class PingHandler(BaseHTTPRequestHandler):
-        def do_GET(self):
-            self.send_response(200)
-            self.send_header("Content-type", "text/plain")
-            self.end_headers()
-            self.wfile.write(b"OK")
-
-        def log_message(self, format, *args):
-            # Silenciar los logs del servidor HTTP para no saturar
-            pass
-
-    port = int(os.environ.get("PORT", "10000"))
-
-    def serve():
-        try:
-            server = HTTPServer(("0.0.0.0", port), PingHandler)
-            logger.info("Servidor de ping iniciado en el puerto %s", port)
-            server.serve_forever()
-        except Exception as e:
-            logger.warning("El servidor de ping no pudo iniciar: %s", e)
-
-    thread = threading.Thread(target=serve, daemon=True)
-    thread.start()
-
-
 async def post_init(application: Application) -> None:
-    """
-    Se ejecuta después de que el bot se inicialice.
-    """
-
     await database.init_db()
 
     commands = [
@@ -111,10 +77,6 @@ async def post_init(application: Application) -> None:
 
 
 def main() -> None:
-    """
-    Punto principal de ejecución del bot.
-    """
-
     application = (
         Application.builder()
         .token(TOKEN)
@@ -165,7 +127,6 @@ def main() -> None:
         )
     )
 
-    # Botón Ver objetos (inventario).
     application.add_handler(
         CallbackQueryHandler(
             inventory_show_callback,
@@ -173,11 +134,39 @@ def main() -> None:
         )
     )
 
-    # Botón volver desde el inventario.
     application.add_handler(
         CallbackQueryHandler(
             inventory_back_callback,
             pattern=r"^inv:back$"
+        )
+    )
+
+    # Handlers del diario coleccionable.
+    application.add_handler(
+        CallbackQueryHandler(
+            diary_get_callback,
+            pattern=r"^diary:get:"
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            diary_read_callback,
+            pattern=r"^diary:read:"
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            diary_show_callback,
+            pattern=r"^diary:show$"
+        )
+    )
+
+    application.add_handler(
+        CallbackQueryHandler(
+            diary_back_callback,
+            pattern=r"^diary:back$"
         )
     )
 
@@ -220,12 +209,6 @@ def main() -> None:
 
     application.add_error_handler(error_handler)
 
-    # Si estamos en Render, iniciar el servidor de ping
-    # para que UptimeRobot mantenga el servicio despierto.
-    if os.environ.get("RENDER_EXTERNAL_URL"):
-        _start_ping_server()
-
-    # Siempre usamos polling, tanto en local como en Render.
     logger.info("Bot iniciado en modo polling.")
 
     application.run_polling(

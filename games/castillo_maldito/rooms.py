@@ -1,6 +1,7 @@
 # Habitaciones del juego: Castillo Maldito.
 #
-# Versión con formato HTML: cursivas en las citas importantes.
+# Versión con formato HTML, finales alternativos, objetos combinables
+# y diarios coleccionables.
 
 
 START_ROOM = "intro"
@@ -116,6 +117,11 @@ ROOMS = {
                 "to_room": "entrada",
             },
             {
+                "label": "📖 Leer la inscripción de la fuente",
+                "callback": "diary:get:pagina_reina",
+                "hide_if_flag": "pagina_reina",
+            },
+            {
                 "label": "🔍 Buscar en la fuente",
                 "callback": "flag:llave_oxidada",
                 "hide_if_flag": "llave_oxidada",
@@ -154,6 +160,11 @@ ROOMS = {
                 "label": "🔥 Encender la antorcha",
                 "callback": "flag:antorcha",
                 "hide_if_flag": "antorcha",
+            },
+            {
+                "label": "📖 Examinar las notas de Malachar",
+                "callback": "diary:get:pagina_malachar",
+                "hide_if_flag": "pagina_malachar",
             },
             {
                 "label": "⬅️ Volver al patio",
@@ -237,6 +248,11 @@ ROOMS = {
                 "label": "🔑 Introducir código",
                 "callback": "code:camara_codigo",
                 "hide_if_flag": "pasillo_espejos_desbloqueado",
+            },
+            {
+                "label": "📖 Leer las marcas de la pared",
+                "callback": "diary:get:pagina_rey",
+                "hide_if_flag": "pagina_rey",
             },
             {
                 "label": "🕳️ Seguir el pasadizo",
