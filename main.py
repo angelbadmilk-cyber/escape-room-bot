@@ -3,12 +3,13 @@ import os
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from telegram import BotCommand
+from telegram import BotCommand, Update
 from telegram.error import TelegramError
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
     CommandHandler,
+    ContextTypes,
     MessageHandler,
     filters,
 )
@@ -44,11 +45,9 @@ from engine.diary_handlers import (
 )
 
 
-# Usamos el renderizador de imágenes mejorado.
 handlers._render_photo = photo_renderer.render_photo
 
 
-# Configuración básica de logs
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     level=logging.INFO,
@@ -60,12 +59,6 @@ logger = logging.getLogger(__name__)
 
 
 def _start_ping_server():
-    """
-    Inicia un pequeño servidor HTTP en segundo plano
-    para que UptimeRobot pueda hacer ping al servicio
-    y mantenerlo despierto en Render.
-    """
-
     class PingHandler(BaseHTTPRequestHandler):
         def do_GET(self):
             self.send_response(200)
@@ -74,7 +67,6 @@ def _start_ping_server():
             self.wfile.write(b"OK")
 
         def log_message(self, format, *args):
-            # Silenciar los logs del servidor HTTP
             pass
 
     port = int(os.environ.get("PORT", "10000"))
@@ -91,11 +83,17 @@ def _start_ping_server():
     thread.start()
 
 
-async def post_init(application: Application) -> None:
+async def _preload_progress(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """
-    Se ejecuta después de que el bot se inicialice.
+    Carga el progreso del jugador desde la base de datos ANTES de que
+    cualquier otro handler procese el mensaje o el botón.
+    Esto garantiza que, tras un redeploy, el inventario y la habitación
+    se recuperen automáticamente desde Supabase.
     """
+    await handlers._load_progress_from_db(update, context)
 
+
+async def post_init(application: Application) -> None:
     await database.init_db()
 
     commands = [
@@ -111,16 +109,11 @@ async def post_init(application: Application) -> None:
     try:
         await application.bot.set_my_commands(commands)
         logger.info("Menú de comandos de Telegram configurado.")
-
     except TelegramError:
         logger.warning("No se pudo configurar el menú de comandos de Telegram.")
 
 
 def main() -> None:
-    """
-    Punto principal de ejecución del bot.
-    """
-
     application = (
         Application.builder()
         .token(TOKEN)
@@ -128,144 +121,55 @@ def main() -> None:
         .build()
     )
 
-    application.add_handler(CommandHandler("start", start))
+    # PRECARGA: corre en el grupo -1 (antes que todos los demás handlers).
+    # Recupera el progreso desde Supabase en cada interacción.
+    application.add_handler(
+        CallbackQueryHandler(_preload_progress),
+        group=-1,
+    )
+    application.add_handler(
+        MessageHandler(filters.ALL, _preload_progress),
+        group=-1,
+    )
 
+    application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("ayuda", help_command))
-
     application.add_handler(CommandHandler("reiniciar", restart_command))
-
     application.add_handler(CommandHandler("reiniciar_juego", reset_current_game_command))
-
     application.add_handler(CommandHandler("estado", state_command))
-
     application.add_handler(CommandHandler("como_jugar", howto_command))
-
     application.add_handler(CommandHandler("comandos", commands_list_command))
 
-    application.add_handler(
-        CallbackQueryHandler(
-            state_callback,
-            pattern="^menu:state$"
-        )
-    )
+    application.add_handler(CallbackQueryHandler(state_callback, pattern="^menu:state$"))
+    application.add_handler(CallbackQueryHandler(state_action_callback, pattern=r"^state:"))
+    application.add_handler(CallbackQueryHandler(howto_callback, pattern="^menu:howto$"))
+    application.add_handler(CallbackQueryHandler(hint_callback, pattern="^hint$"))
+    application.add_handler(CallbackQueryHandler(inventory_show_callback, pattern=r"^inv:show$"))
+    application.add_handler(CallbackQueryHandler(inventory_back_callback, pattern=r"^inv:back$"))
 
-    application.add_handler(
-        CallbackQueryHandler(
-            state_action_callback,
-            pattern=r"^state:"
-        )
-    )
+    application.add_handler(CallbackQueryHandler(diary_get_callback, pattern=r"^diary:get:"))
+    application.add_handler(CallbackQueryHandler(diary_read_callback, pattern=r"^diary:read:"))
+    application.add_handler(CallbackQueryHandler(diary_show_callback, pattern=r"^diary:show$"))
+    application.add_handler(CallbackQueryHandler(diary_back_callback, pattern=r"^diary:back$"))
 
-    application.add_handler(
-        CallbackQueryHandler(
-            howto_callback,
-            pattern="^menu:howto$"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            hint_callback,
-            pattern="^hint$"
-        )
-    )
-
-    # Botón Ver objetos (inventario).
-    application.add_handler(
-        CallbackQueryHandler(
-            inventory_show_callback,
-            pattern=r"^inv:show$"
-        )
-    )
-
-    # Botón volver desde el inventario.
-    application.add_handler(
-        CallbackQueryHandler(
-            inventory_back_callback,
-            pattern=r"^inv:back$"
-        )
-    )
-
-    # Handlers del diario coleccionable.
-    application.add_handler(
-        CallbackQueryHandler(
-            diary_get_callback,
-            pattern=r"^diary:get:"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            diary_read_callback,
-            pattern=r"^diary:read:"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            diary_show_callback,
-            pattern=r"^diary:show$"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            diary_back_callback,
-            pattern=r"^diary:back$"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            flag_callback,
-            pattern=r"^flag:"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            lock_callback,
-            pattern=r"^lock:"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            game_info_callback,
-            pattern=r"^choose:"
-        )
-    )
-
-    application.add_handler(
-        CallbackQueryHandler(
-            start_game_callback,
-            pattern=r"^startgame:"
-        )
-    )
+    application.add_handler(CallbackQueryHandler(flag_callback, pattern=r"^flag:"))
+    application.add_handler(CallbackQueryHandler(lock_callback, pattern=r"^lock:"))
+    application.add_handler(CallbackQueryHandler(game_info_callback, pattern=r"^choose:"))
+    application.add_handler(CallbackQueryHandler(start_game_callback, pattern=r"^startgame:"))
 
     application.add_handler(CallbackQueryHandler(button_callback))
 
-    application.add_handler(
-        MessageHandler(
-            filters.TEXT,
-            text_handler,
-        )
-    )
+    application.add_handler(MessageHandler(filters.TEXT, text_handler))
 
     application.add_error_handler(error_handler)
 
-    # Si estamos en Render, iniciar el servidor de ping
-    # para que UptimeRobot mantenga el servicio despierto.
     if os.environ.get("RENDER_EXTERNAL_URL"):
         _start_ping_server()
 
-    # Siempre usamos polling, tanto en local como en Render.
     logger.info("Bot iniciado en modo polling.")
 
-    application.run_polling(
-        drop_pending_updates=True,
-    )
+    application.run_polling(drop_pending_updates=True)
 
 
 if __name__ == "__main__":
