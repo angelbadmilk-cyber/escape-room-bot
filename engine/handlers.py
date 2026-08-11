@@ -12,6 +12,11 @@ from engine.keyboards import (
     back_to_menu_keyboard,
     game_selection_keyboard,
 )
+from engine.items import (
+    get_item_description,
+    get_item_image,
+    get_item_name,
+)
 from games.registry import (
     get_available_games_text,
     get_enabled_games,
@@ -297,9 +302,6 @@ async def _render_photo_for_query(query, context: ContextTypes.DEFAULT_TYPE, pho
 
 
 async def _show_main_menu(update_or_query, context: ContextTypes.DEFAULT_TYPE, chat_id, fallback_message=None) -> None:
-    """
-    Muestra el menú principal con la imagen del castillo.
-    """
     await _render_photo(
         context,
         chat_id,
@@ -529,7 +531,6 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     if game_manager.check_puzzle_code(puzzle, user_code):
         _clear_waiting_code(context)
 
-        # Si el puzle da un objeto (success_flag), añadirlo
         success_flag = puzzle.get("success_flag")
         if success_flag:
             user = _get_user(update)
@@ -540,8 +541,34 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     current_flags.append(success_flag)
                     context.user_data["current_flags"] = current_flags
 
-        success_room = puzzle.get("success_room")
+        # Si el flag es un objeto conocido (llave_hueso, etc.), mostrar imagen épica
+        item_image = get_item_image(success_flag) if success_flag else None
+        if item_image and not item_image.startswith("PEGA_AQUI"):
+            item_name = get_item_name(success_flag)
+            item_description = get_item_description(success_flag)
+            caption = f"✅ Has obtenido: {item_name}"
+            if item_description:
+                caption += f"\n\n{item_description}"
+            
+            success_text = puzzle.get("success_text", "")
+            if success_text:
+                caption += f"\n\n{success_text}"
 
+            # Si el puzle también te lleva a otra habitación, mostrar la imagen
+            # y luego (cuando pulses cualquier botón) la habitación.
+            # Por simplicidad, mostramos la imagen y NO cambiamos de habitación automáticamente.
+            chat = update.effective_chat
+            fallback_message = update.effective_message
+            if chat:
+                room = game_manager.get_room(game_id, room_id)
+                game = get_game_by_id(game_id)
+                flags = _get_current_flags(context)
+                keyboard = game_manager.build_room_keyboard(game, room, flags) if room and game else back_to_menu_keyboard()
+                await _render_photo(context, chat.id, item_image, caption, keyboard, fallback_message)
+                return
+
+        # Si no hay imagen de objeto, comportamiento normal
+        success_room = puzzle.get("success_room")
         if success_room:
             game = get_game_by_id(game_id)
             if game:
@@ -561,7 +588,6 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     else:
         error_text = puzzle.get("error_text", "❌ Código incorrecto.")
 
-        # NO limpiamos waiting_code para que el jugador pueda reintentar.
         room = game_manager.get_room(game_id, room_id)
         game = get_game_by_id(game_id)
 
@@ -778,7 +804,6 @@ async def _handle_flag_callback(query, context, flag_name: str) -> None:
 
 async def error_handler(update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
     if context.error:
-        # Ignorar el error de "Query is too old" porque no es crítico.
         if isinstance(context.error, BadRequest):
             error_message = str(context.error).lower()
             if "query is too old" in error_message or "query id is invalid" in error_message:

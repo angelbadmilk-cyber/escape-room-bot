@@ -1,6 +1,6 @@
 # Habitaciones del juego: Castillo Maldito.
 #
-# Versión con historia mejorada y finales alternativos.
+# Versión con historia pulida y finales alternativos.
 # - La corona rota es un objeto opcional en la capilla.
 # - Final normal: escapar sin la corona.
 # - Final del tesoro: escapar con la corona.
@@ -139,8 +139,8 @@ ROOMS = {
             "Este era el lugar desde donde el consejero Malachar vigilaba al rey encerrado.\n\n"
             "En el primer escalón hay una antorcha apagada, pero la yesca está seca.\n\n"
             "En la pared, alguien grabó una frase con rabia:\n\n"
-            "\"El código del rey abre la capilla.\n"
-            "Búscalo en su corona, donde solo el verdadero heredero puede leerlo.\"\n\n"
+            "\"Malachar escondió la verdad en los espejos.\n"
+            "El sello del heredero abrirá la capilla donde descansa la corona.\"\n\n"
             "Y debajo, con letra más serena:\n\n"
             "\"Malachar no sabía que el rey tenía un heredero. Ese es su error.\""
         ),
@@ -315,7 +315,7 @@ ROOMS = {
             "\"El miedo es la única prisión de la que no puedes escapar.\"\n\n"
             "El rey Aldric escribió esto antes de morir. Su última enseñanza."
         ),
-        "image_url": "https://i.ibb.co/V0gKBLzn/10-capilla.jpg",
+        "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
         "hint": "Observa la corona para el código. Lee bien las inscripciones.",
         "buttons": [
             {
@@ -373,7 +373,7 @@ ROOMS = {
             "El rey Aldric.\n\n"
             "No respira. No se mueve. Murió hace siglos, pero la maldición no le permite descansar.\n\n"
             "Sus ojos vacíos te siguen.\n"
-            "Y en su mano huesos sostiene una llave tallada en hueso.\n\n"
+            "Y en su mano huesuda sostiene una llave tallada en hueso.\n\n"
             "De pronto, una voz fría llena la sala:\n\n"
             "\"Responde a mi pregunta, viajero... y la llave será tuya.\n"
             "Falla... y te quedarás aquí para siempre, como yo.\"\n\n"
@@ -410,7 +410,7 @@ ROOMS = {
                     "Lo que te trajo hasta aquí y lo que te seguirá hasta el final.\n"
                     "Malachar me encerró con cadenas de hierro.\n"
                     "Pero había una prisión de la que ni él pudo liberarme.\n"
-                    "Recuerda las palabras grabadas en la capilla.\""
+                    "Recuerda las palabras grabadas en la base del altar de la capilla.\""
                 ),
                 "answers": [
                     "MIEDO",
@@ -418,10 +418,9 @@ ROOMS = {
                     "MUERTE",
                 ],
                 "success_flag": "llave_hueso",
-                "success_room": "salon_trono",
                 "success_text": (
                     "✅ El rey asiente lentamente.\n\n"
-                    "Sus dedos huesos se abren y dejan caer la llave.\n\n"
+                    "Sus dedos huesudos se abren y dejan caer la llave en tu mano.\n\n"
                     "\"Has respondido bien. Eres digno de salir.\n"
                     "Yo... por fin puedo descansar.\"\n\n"
                     "Has obtenido la llave de hueso."
@@ -429,7 +428,7 @@ ROOMS = {
                 "error_text": (
                     "❌ El rey niega con la cabeza.\n\n"
                     "Su susurro se vuelve más frío.\n"
-                    "\"Esa no es la respuesta. Piensa en lo que viste en la capilla.\""
+                    "\"Esa no es la respuesta. Piensa en la inscripción del altar.\""
                 ),
             },
         },
