@@ -16,7 +16,7 @@ ITEMS = {
     "llave_oxidada": {
         "name": "🗝️ Llave oxidada",
         "description": "Una vieja llave oxidada, cubierta de musgo.",
-        "image": "PEGA_AQUI_LA_URL_DE_LA_LLAVE_OXIDADA",
+        "image": "https://i.ibb.co/8D5ngYv6/objeto-llave-oxidada-patio.jpg",
     },
     "sello_real": {
         "name": "👑 Sello real",
