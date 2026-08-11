@@ -1,5 +1,7 @@
 import logging
 import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from telegram import BotCommand
 from telegram.error import TelegramError
@@ -49,6 +51,38 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
+
+def _start_ping_server():
+    """
+    Inicia un pequeño servidor HTTP en segundo plano
+    para que UptimeRobot pueda hacer ping al servicio
+    y mantenerlo despierto en Render.
+    """
+
+    class PingHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"OK")
+
+        def log_message(self, format, *args):
+            # Silenciar los logs del servidor HTTP para no saturar
+            pass
+
+    port = int(os.environ.get("PORT", "10000"))
+
+    def serve():
+        try:
+            server = HTTPServer(("0.0.0.0", port), PingHandler)
+            logger.info("Servidor de ping iniciado en el puerto %s", port)
+            server.serve_forever()
+        except Exception as e:
+            logger.warning("El servidor de ping no pudo iniciar: %s", e)
+
+    thread = threading.Thread(target=serve, daemon=True)
+    thread.start()
 
 
 async def post_init(application: Application) -> None:
@@ -186,31 +220,17 @@ def main() -> None:
 
     application.add_error_handler(error_handler)
 
-    # Detectar si estamos en Render.
-    render_url = os.environ.get("RENDER_EXTERNAL_URL")
+    # Si estamos en Render, iniciar el servidor de ping
+    # para que UptimeRobot mantenga el servicio despierto.
+    if os.environ.get("RENDER_EXTERNAL_URL"):
+        _start_ping_server()
 
-    if render_url:
-        # Modo webhook: se usa en Render.
-        port = int(os.environ.get("PORT", "8443"))
-        webhook_path = TOKEN
-        webhook_url = f"{render_url}/{webhook_path}"
+    # Siempre usamos polling, tanto en local como en Render.
+    logger.info("Bot iniciado en modo polling.")
 
-        logger.info("Bot iniciado en modo webhook (Render).")
-
-        application.run_webhook(
-            listen="0.0.0.0",
-            port=port,
-            url_path=webhook_path,
-            webhook_url=webhook_url,
-            drop_pending_updates=True,
-        )
-    else:
-        # Modo polling: se usa en tu PC.
-        logger.info("Bot iniciado en modo polling (local).")
-
-        application.run_polling(
-            drop_pending_updates=True,
-        )
+    application.run_polling(
+        drop_pending_updates=True,
+    )
 
 
 if __name__ == "__main__":
