@@ -1,4 +1,5 @@
 import logging
+import os
 
 from telegram import BotCommand
 from telegram.error import TelegramError
@@ -185,9 +186,31 @@ def main() -> None:
 
     application.add_error_handler(error_handler)
 
-    logger.info("Bot iniciado. Esperando mensajes...")
+    # Detectar si estamos en Render.
+    render_url = os.environ.get("RENDER_EXTERNAL_URL")
 
-    application.run_polling()
+    if render_url:
+        # Modo webhook: se usa en Render.
+        port = int(os.environ.get("PORT", "8443"))
+        webhook_path = TOKEN
+        webhook_url = f"{render_url}/{webhook_path}"
+
+        logger.info("Bot iniciado en modo webhook (Render).")
+
+        application.run_webhook(
+            listen="0.0.0.0",
+            port=port,
+            url_path=webhook_path,
+            webhook_url=webhook_url,
+            drop_pending_updates=True,
+        )
+    else:
+        # Modo polling: se usa en tu PC.
+        logger.info("Bot iniciado en modo polling (local).")
+
+        application.run_polling(
+            drop_pending_updates=True,
+        )
 
 
 if __name__ == "__main__":
