@@ -1,5 +1,6 @@
 # Variables secretas (NUNCA se suben a GitHub)
 .env
+.env_example
 .token
 
 # Archivos temporales de Python
