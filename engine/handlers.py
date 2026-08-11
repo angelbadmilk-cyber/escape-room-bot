@@ -710,6 +710,24 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not chat:
         return
 
+    # Ir directo al juego: continuar la partida guardada o empezar la intro.
+    enabled_games = get_enabled_games()
+    if enabled_games:
+        # Si hay partida guardada en un juego habilitado, usar ese juego.
+        current_game = context.user_data.get("current_game")
+        if not current_game or not get_game_by_id(current_game):
+            current_game = enabled_games[0][0]
+
+        user = _get_user(update)
+        if user:
+            await _load_game_into_context(context, user.id, current_game)
+            current_game = context.user_data.get("current_game")
+            current_room = context.user_data.get("current_room")
+            if current_game and current_room:
+                await _show_room_from_update(update, context, current_game, current_room)
+                return
+
+    # Solo si no se pudo cargar ningún juego, mostrar el menú principal.
     await _show_main_menu(update, context, chat.id, update.effective_message)
 
 
