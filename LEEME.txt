@@ -1,0 +1,52 @@
+ESCAPE ROOM BOT
+===============
+
+Este proyecto contiene un bot de Telegram para juegos de escape room.
+
+Archivos importantes:
+
+- iniciar_bot.bat
+  Inicia el bot haciendo doble clic.
+
+- instalar_dependencias.bat
+  Instala o actualiza las librerias necesarias.
+
+- main.py
+  Archivo principal del bot.
+
+- .env
+  Contiene el token secreto del bot.
+  No compartas este archivo.
+
+- games/
+  Carpeta con los juegos del bot.
+
+- engine/
+  Carpeta con el motor del bot.
+
+Para empezar:
+
+1. Si es la primera vez, ejecuta instalar_dependencias.bat
+2. Luego ejecuta iniciar_bot.bat
+3. Abre Telegram y escribe /start a tu bot
+
+Comandos principales dentro de Telegram:
+
+/start
+  Abre el menu principal.
+
+/estado
+  Muestra tu partida actual.
+
+/como_jugar
+  Muestra instrucciones basicas.
+
+/reiniciar_juego
+  Borra solo el progreso del juego actual.
+
+/reiniciar
+  Borra todo el progreso.
+
+Importante:
+
+No cierres la ventana del bot mientras quieras que este funcionando.

@@ -1,0 +1,23 @@
+# Variables secretas (NUNCA se suben a GitHub)
+.env
+.token
+
+# Archivos temporales de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de datos local (el progreso se guarda aquí)
+*.db
+*.sqlite
+*.sqlite3
+escape_room.db
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
