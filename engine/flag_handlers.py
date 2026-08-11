@@ -2,25 +2,12 @@ from telegram import Update
 from telegram.ext import ContextTypes
 
 from engine import database, game_manager, handlers
-from engine.state_handlers import _format_flag
+from engine.items import (
+    get_item_description,
+    get_item_image,
+    get_item_name,
+)
 from games.registry import get_game_by_id
-
-
-# Imágenes asociadas a cada flag
-FLAG_IMAGES = {
-    "antorcha": "https://i.ibb.co/RGpDwJGM/objeto-antorcha.jpg",
-    "sello_real": "https://i.ibb.co/KzrfmryN/objeto-sello-real.jpg",
-    "llave_hueso": "https://i.ibb.co/LXgh1Fqk/objeto-llave-hueso.jpg",
-    "llave_oxidada": "https://i.ibb.co/8D5ngYv6/objeto-llave-oxidada-patio.jpg",
-}
-
-# Textos descriptivos para cada objeto
-FLAG_DESCRIPTIONS = {
-    "antorcha": "La llama ilumina la oscuridad.",
-    "sello_real": "El sello real brilla con un poder antiguo.",
-    "llave_hueso": "Una llave tallada en hueso humano.",
-    "llave_oxidada": "Una vieja llave oxidada, cubierta de musgo.",
-}
 
 
 async def flag_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -54,8 +41,8 @@ async def flag_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         await query.answer("No hay ninguna partida activa.", show_alert=True)
         return
 
-    item_name = _format_flag(flag)
-    description = FLAG_DESCRIPTIONS.get(flag, "")
+    item_name = get_item_name(flag)
+    description = get_item_description(flag)
 
     current_flags = context.user_data.get("current_flags")
     if not isinstance(current_flags, list):
@@ -81,7 +68,7 @@ async def flag_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         flags_list = []
     keyboard = game_manager.build_room_keyboard(game, room, flags_list)
 
-    image_url = FLAG_IMAGES.get(flag)
+    image_url = get_item_image(flag)
 
     caption = f"✅ Has obtenido: {item_name}"
     if description:
