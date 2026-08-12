@@ -10,7 +10,6 @@ from games import registry
 logger = logging.getLogger(__name__)
 
 
-# Susurros que el castillo deja oír de vez en cuando.
 WHISPERS = [
     "...alguien susurra tu nombre desde la pared...",
     "...sientes una mirada en la nuca...",
@@ -22,7 +21,6 @@ WHISPERS = [
     "...una puerta que no existe se cierra de golpe...",
 ]
 
-# Probabilidad (0 a 1) de que aparezca un susurro al entrar en una habitación.
 WHISPER_CHANCE = 0.15
 
 
@@ -56,6 +54,21 @@ def get_room(game_id: str, room_id: str):
     return rooms.get(room_id)
 
 
+def get_dialogues(game_id: str):
+    """
+    Devuelve el diccionario de diálogos (NPCs) de un juego, si existe.
+    """
+    game = registry.get_game_by_id(game_id)
+    if not game:
+        return {}
+    folder = game.get("folder", game_id)
+    try:
+        module = importlib.import_module(f"games.{folder}.rooms")
+        return getattr(module, "DIALOGUES", {})
+    except Exception:
+        return {}
+
+
 def render_room_text(room: dict) -> str:
     title = room.get("title", "Habitación")
     text = room.get("text", "")
@@ -66,7 +79,6 @@ def render_room_text(room: dict) -> str:
         f"{text}"
     )
 
-    # A veces el castillo susurra algo.
     if random.random() < WHISPER_CHANCE:
         base += f"\n\n<i>{random.choice(WHISPERS)}</i>"
 

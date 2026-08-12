@@ -286,16 +286,22 @@ ROOMS = {
             "Pero la capilla no está aquí. No todavía.\n\n"
             "Estos espejos fueron un regalo de Malachar al rey. "
             "Un regalo envenenado: quien se mira en ellos, ve a los que quedaron atrapados.\n\n"
+            "En el fragmento más grande, una figura femenina te observa en silencio.\n"
+            "<i>Parece esperar a que le hables.</i>\n\n"
             "Al final del pasillo hay una puerta pequeña con una cruz de hierro.\n"
             "<i>Parece necesitar algún tipo de sello para abrirse.</i>\n\n"
             "Entre los fragmentos de vidrio, algo brilla."
         ),
         "image_url": "https://i.ibb.co/rR4NvPxm/09-pasillo-espejos.jpg",
-        "hint": "Busca un sello real entre los espejos.",
+        "hint": "Busca un sello real entre los espejos. La figura del espejo quizá quiera hablar.",
         "buttons": [
             {
                 "label": "⬅️ Volver a la cámara secreta",
                 "to_room": "camara_secreta",
+            },
+            {
+                "label": "👻 Hablar con el reflejo",
+                "callback": "talk:reina:start",
             },
             {
                 "label": "👑 Recoger sello real",
@@ -593,5 +599,44 @@ ROOMS = {
                 "to_room": "entrada",
             },
         ],
+    },
+}
+
+
+# Diálogos con NPCs (personajes con los que hablar).
+DIALOGUES = {
+    "reina": {
+        "start": {
+            "text": (
+                "El reflejo de la reina te mira desde el espejo roto.\n\n"
+                "<i>\"Heredero... al fin te veo con claridad.\"</i>"
+            ),
+            "options": [
+                {"label": "¿Quién eres?", "to": "quien"},
+                {"label": "¿Cómo rompo la maldición?", "to": "maldicion"},
+                {"label": "🚪 Despedirme", "close": True},
+            ],
+        },
+        "quien": {
+            "text": (
+                "<i>\"Fui la reina de este castillo. Malachar me borró el rostro y el nombre. "
+                "Pero mi amor quedó grabado en el espejo, y en las páginas que escondí.\"</i>"
+            ),
+            "options": [
+                {"label": "¿Cómo rompo la maldición?", "to": "maldicion"},
+                {"label": "🚪 Despedirme", "close": True},
+            ],
+        },
+        "maldicion": {
+            "text": (
+                "<i>\"La maldición se rompe ante el trono. El rey solo entrega su llave a quien responde con verdad. "
+                "La inscripción del altar guarda la respuesta.\"</i>\n\n"
+                "<i>\"Y si llevas conmigo mis tres páginas, él te reconocerá como lo que eres.\"</i>"
+            ),
+            "options": [
+                {"label": "¿Quién eres?", "to": "quien"},
+                {"label": "🚪 Despedirme", "close": True},
+            ],
+        },
     },
 }

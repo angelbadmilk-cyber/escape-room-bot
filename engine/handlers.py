@@ -515,9 +515,6 @@ async def _handle_code_request(query, context, puzzle_key: str) -> None:
 
 
 async def _handle_choice_callback(query, context, puzzle_key: str, option: str) -> None:
-    """
-    Maneja los puzzles de botones (elegir una opción pulsando, sin escribir).
-    """
     if context.user_data is None:
         return
     game_id = context.user_data.get("current_game")
@@ -559,6 +556,52 @@ async def _handle_choice_callback(query, context, puzzle_key: str, option: str) 
     else:
         error_text = puzzle.get("error_text", "❌ <b>Incorrecto.</b>")
         await _edit_query_ui(query, context, error_text, back_keyboard)
+
+
+async def _handle_talk_callback(query, context, npc_key: str, node_key: str) -> None:
+    """
+    Maneja los diálogos con NPCs (personajes con los que hablar).
+    """
+    if context.user_data is None:
+        return
+    game_id = context.user_data.get("current_game")
+    room_id = context.user_data.get("current_room")
+    if not game_id or not room_id:
+        return
+
+    dialogues = game_manager.get_dialogues(game_id)
+    npc = dialogues.get(npc_key)
+    if not npc:
+        return
+    node = npc.get(node_key)
+    if not node:
+        return
+
+    text = node.get("text", "")
+    flags = _get_current_flags(context)
+    game = get_game_by_id(game_id)
+    game_code = game.get("code", "") if game else ""
+
+    keyboard = []
+    for option in node.get("options", []):
+        required = option.get("requires_flag")
+        if required and required not in flags:
+            continue
+        hide = option.get("hide_if_flag")
+        if hide and hide in flags:
+            continue
+
+        to = option.get("to")
+        if to:
+            keyboard.append(
+                [InlineKeyboardButton(option.get("label", "..."), callback_data=f"talk:{npc_key}:{to}")]
+            )
+        elif option.get("close"):
+            keyboard.append(
+                [InlineKeyboardButton(option.get("label", "Adiós"), callback_data=f"play:{game_code}:{room_id}")]
+            )
+
+    await _edit_query_ui(query, context, text, InlineKeyboardMarkup(keyboard))
 
 
 async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -878,6 +921,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
         if len(parts) == 3:
             _, puzzle_key, option = parts
             await _handle_choice_callback(query, context, puzzle_key, option)
+        return
+
+    elif data.startswith("talk:"):
+        parts = data.split(":", 2)
+        if len(parts) == 3:
+            _, npc_key, node_key = parts
+            await _handle_talk_callback(query, context, npc_key, node_key)
         return
 
     else:
