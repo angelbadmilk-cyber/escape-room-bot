@@ -344,6 +344,11 @@ ROOMS = {
                 "hide_if_flag": "corona",
             },
             {
+                "label": "🕯️ Entrar a la cámara de la reina",
+                "to_room": "camara_de_la_reina",
+                "requires_flags": ["pagina_reina", "pagina_rey", "pagina_malachar"],
+            },
+            {
                 "label": "👑 Entrar al salón del trono",
                 "to_room": "salon_trono",
                 "requires_flag": "salon_trono_desbloqueado",
@@ -368,6 +373,61 @@ ROOMS = {
                 "error_text": (
                     "❌ <b>La capilla no acepta ese código.</b>\n\n"
                     "<i>Las velas parpadean con fuerza.</i>"
+                ),
+            },
+        },
+    },
+
+    "camara_de_la_reina": {
+        "title": "La cámara de la reina",
+        "text": (
+            "Detrás del altar, una puerta oculta se abre al reconocer las tres páginas del diario.\n\n"
+            "Una pequeña cámara bañada por una luz plateada. "
+            "En el centro, un espejo de mano que no refleja tu rostro: refleja el de una mujer serena.\n\n"
+            "La reina.\n\n"
+            "Su voz suena dentro de tu cabeza:\n\n"
+            "<i>\"Tres veces me nombraron, pero solo una palabra me devuelve. "
+            "Elige la palabra que grabé en mi espejo y recibirás mi bendición.\"</i>"
+        ),
+        "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
+        "hint": "La primera palabra que la reina escribió en su página del diario.",
+        "buttons": [
+            {
+                "label": "🕯️ Miedo",
+                "callback": "choice:espejo_reina:MIEDO",
+                "hide_if_flag": "bendicion_reina",
+            },
+            {
+                "label": "👑 Corona",
+                "callback": "choice:espejo_reina:CORONA",
+                "hide_if_flag": "bendicion_reina",
+            },
+            {
+                "label": "💗 Recuerda",
+                "callback": "choice:espejo_reina:RECUERDA",
+                "hide_if_flag": "bendicion_reina",
+            },
+            {
+                "label": "⬅️ Volver a la capilla",
+                "to_room": "capilla",
+            },
+        ],
+        "puzzles": {
+            "espejo_reina": {
+                "answers": [
+                    "RECUERDA",
+                ],
+                "success_flag": "bendicion_reina",
+                "success_text": (
+                    "✅ <b>El espejo se enciende.</b>\n\n"
+                    "La sonrisa de la reina se dibuja en el cristal.\n\n"
+                    "<i>\"Recuerda. Ese fue siempre mi nombre y mi promesa. "
+                    "Llévalo contigo, heredero.\"</i>\n\n"
+                    "<b>Has recibido la bendición de la reina.</b>"
+                ),
+                "error_text": (
+                    "❌ <b>El espejo permanece frío.</b>\n\n"
+                    "<i>Esa no es la palabra que grabé.</i>"
                 ),
             },
         },

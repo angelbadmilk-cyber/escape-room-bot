@@ -2,7 +2,7 @@ import asyncio
 import logging
 import traceback
 
-from telegram import InputMediaPhoto, Update
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto, Update
 from telegram.error import BadRequest, TelegramError
 from telegram.ext import ContextTypes
 
@@ -32,8 +32,6 @@ logger = logging.getLogger(__name__)
 PARSE_MODE = "HTML"
 
 
-# Telegram limita el caption de las fotos a 1024 caracteres.
-# Por seguridad, si el texto supera este umbral lo enviamos separado.
 MAX_PHOTO_CAPTION = 1000
 
 
@@ -239,8 +237,6 @@ async def _render_photo(context: ContextTypes.DEFAULT_TYPE, chat_id, photo_url: 
     if not photo_url:
         return await _render_text(context, chat_id, caption, keyboard, fallback_message)
 
-    # Si el texto es demasiado largo para ir sobre la foto (límite de Telegram),
-    # enviamos la imagen sola y el texto completo como mensaje aparte.
     if len(caption) > MAX_PHOTO_CAPTION:
         try:
             await context.bot.send_photo(
@@ -518,6 +514,53 @@ async def _handle_code_request(query, context, puzzle_key: str) -> None:
     await _edit_query_ui(query, context, text, back_to_menu_keyboard())
 
 
+async def _handle_choice_callback(query, context, puzzle_key: str, option: str) -> None:
+    """
+    Maneja los puzzles de botones (elegir una opción pulsando, sin escribir).
+    """
+    if context.user_data is None:
+        return
+    game_id = context.user_data.get("current_game")
+    room_id = context.user_data.get("current_room")
+    if not game_id or not room_id:
+        return
+
+    puzzle = game_manager.get_room_puzzle(game_id, room_id, puzzle_key)
+    if not puzzle:
+        return
+
+    game = get_game_by_id(game_id)
+    game_code = game.get("code", "") if game else ""
+    back_keyboard = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⬅️ Volver", callback_data=f"play:{game_code}:{room_id}")]]
+    )
+
+    if game_manager.check_puzzle_code(puzzle, option):
+        user = _get_user(query)
+        success_flag = puzzle.get("success_flag")
+        if success_flag and user:
+            await database.set_flag(user.id, game_id, success_flag)
+            current_flags = _get_current_flags(context)
+            if success_flag not in current_flags:
+                current_flags.append(success_flag)
+                context.user_data["current_flags"] = current_flags
+
+        success_room = puzzle.get("success_room")
+        if success_room and game:
+            new_game_id, new_room_id = game_manager.navigate_to_room(
+                context.user_data, game_code, success_room
+            )
+            if new_game_id and new_room_id:
+                await _show_room_from_query(query, context, new_game_id, new_room_id)
+                return
+
+        success_text = puzzle.get("success_text", "✅ <b>Correcto.</b>")
+        await _edit_query_ui(query, context, success_text, back_keyboard)
+    else:
+        error_text = puzzle.get("error_text", "❌ <b>Incorrecto.</b>")
+        await _edit_query_ui(query, context, error_text, back_keyboard)
+
+
 async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if context.user_data is None:
         return
@@ -710,10 +753,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if not chat:
         return
 
-    # Ir directo al juego: continuar la partida guardada o empezar la intro.
     enabled_games = get_enabled_games()
     if enabled_games:
-        # Si hay partida guardada en un juego habilitado, usar ese juego.
         current_game = context.user_data.get("current_game")
         if not current_game or not get_game_by_id(current_game):
             current_game = enabled_games[0][0]
@@ -727,7 +768,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 await _show_room_from_update(update, context, current_game, current_room)
                 return
 
-    # Solo si no se pudo cargar ningún juego, mostrar el menú principal.
     await _show_main_menu(update, context, chat.id, update.effective_message)
 
 
@@ -831,6 +871,13 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     elif data.startswith("code:"):
         puzzle_key = data.split(":", 1)[1]
         await _handle_code_request(query, context, puzzle_key)
+        return
+
+    elif data.startswith("choice:"):
+        parts = data.split(":", 2)
+        if len(parts) == 3:
+            _, puzzle_key, option = parts
+            await _handle_choice_callback(query, context, puzzle_key, option)
         return
 
     else:
