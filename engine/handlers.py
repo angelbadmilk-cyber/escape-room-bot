@@ -559,9 +559,6 @@ async def _handle_choice_callback(query, context, puzzle_key: str, option: str) 
 
 
 async def _handle_talk_callback(query, context, npc_key: str, node_key: str) -> None:
-    """
-    Maneja los diálogos con NPCs (personajes con los que hablar).
-    """
     if context.user_data is None:
         return
     game_id = context.user_data.get("current_game")
@@ -578,6 +575,7 @@ async def _handle_talk_callback(query, context, npc_key: str, node_key: str) -> 
         return
 
     text = node.get("text", "")
+    image_url = node.get("image_url")
     flags = _get_current_flags(context)
     game = get_game_by_id(game_id)
     game_code = game.get("code", "") if game else ""
@@ -601,7 +599,13 @@ async def _handle_talk_callback(query, context, npc_key: str, node_key: str) -> 
                 [InlineKeyboardButton(option.get("label", "Adiós"), callback_data=f"play:{game_code}:{room_id}")]
             )
 
-    await _edit_query_ui(query, context, text, InlineKeyboardMarkup(keyboard))
+    markup = InlineKeyboardMarkup(keyboard)
+
+    # Si el nodo tiene imagen válida, mostrar imagen; si no, solo texto.
+    if image_url and not str(image_url).startswith("PEGA"):
+        await _render_photo_for_query(query, context, image_url, text, markup)
+    else:
+        await _edit_query_ui(query, context, text, markup)
 
 
 async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

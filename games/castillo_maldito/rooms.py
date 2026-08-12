@@ -611,6 +611,7 @@ DIALOGUES = {
                 "El reflejo de la reina te mira desde el espejo roto.\n\n"
                 "<i>\"Heredero... al fin te veo con claridad.\"</i>"
             ),
+            "image_url": "https://i.ibb.co/tM4PGmnP/13-espejo-reina.jpghttps://i.ibb.co/tM4PGmnP/13-espejo-reina.jpg",
             "options": [
                 {"label": "¿Quién eres?", "to": "quien"},
                 {"label": "¿Cómo rompo la maldición?", "to": "maldicion"},
@@ -622,6 +623,7 @@ DIALOGUES = {
                 "<i>\"Fui la reina de este castillo. Malachar me borró el rostro y el nombre. "
                 "Pero mi amor quedó grabado en el espejo, y en las páginas que escondí.\"</i>"
             ),
+            "image_url": "https://i.ibb.co/tM4PGmnP/13-espejo-reina.jpg",
             "options": [
                 {"label": "¿Cómo rompo la maldición?", "to": "maldicion"},
                 {"label": "🚪 Despedirme", "close": True},
@@ -633,6 +635,7 @@ DIALOGUES = {
                 "La inscripción del altar guarda la respuesta.\"</i>\n\n"
                 "<i>\"Y si llevas conmigo mis tres páginas, él te reconocerá como lo que eres.\"</i>"
             ),
+            "image_url": "https://i.ibb.co/tM4PGmnP/13-espejo-reina.jpg",
             "options": [
                 {"label": "¿Quién eres?", "to": "quien"},
                 {"label": "🚪 Despedirme", "close": True},
