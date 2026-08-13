@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El espejo de Malachar</title>
+<style>body{background:#0b0d12;color:#d8d4c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+#word{font-size:2.2em;letter-spacing:.15em;transform:scaleX(-1);transition:transform .4s;border:2px solid #3a3f4a;padding:20px 30px;background:#11141b}
+#word.flip{transform:scaleX(1)}
+button{margin-top:24px;padding:12px 22px;background:#2a2f3a;color:#e8e4d8;border:1px solid #555;border-radius:8px;font-size:1em}</style></head>
+<body>
+<h2>🪞 El espejo de Malachar</h2>
+<p>El espejo muestra una palabra al revés.<br><b>Mantén pulsado</b> el botón para sostener un espejo y leerla.</p>
+<div id="word">REFLEJO</div>
+<button id="b">🪞 Sostener el espejo</button>
+<p><i>Vuelve a Telegram y di la palabra al bot.</i></p>
+<script>
+var w=document.getElementById('word'),b=document.getElementById('b');
+function on(){w.classList.add('flip')}function off(){w.classList.remove('flip')}
+b.addEventListener('mousedown',on);b.addEventListener('mouseup',off);b.addEventListener('mouseleave',off);
+b.addEventListener('touchstart',function(e){e.preventDefault();on()});b.addEventListener('touchend',off);
+</script>
+</body></html>

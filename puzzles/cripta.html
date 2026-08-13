@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Los nichos de la cripta</title>
+<style>body{background:#0b0d12;color:#d8d4c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+.row{font-size:1.6em;letter-spacing:.2em;margin:10px 0;border:1px solid #3a3f4a;padding:10px 16px;background:#11141b}</style></head>
+<body>
+<h2>🕯️ Los nichos de la cripta</h2>
+<p>Cuenta cada cosa y escribe los tres números seguidos<br>en este orden: <b>velas, calaveras, llaves</b>.</p>
+<div class="row" id="v"></div>
+<div class="row" id="c"></div>
+<div class="row" id="l"></div>
+<p><i>Vuelve a Telegram y escribe el número al bot.</i></p>
+<script>
+function row(e,n){var s='';for(var i=0;i<n;i++)s+=e+' ';return s.trim()}
+document.getElementById('v').textContent=row('🕯️',3);
+document.getElementById('c').textContent=row('💀',5);
+document.getElementById('l').textContent=row('🗝️',7);
+</script>
+</body></html>

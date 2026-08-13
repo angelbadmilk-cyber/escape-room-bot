@@ -3,6 +3,8 @@
 
 START_ROOM = "intro"
 
+PUZZLES_BASE = "https://angelbadmilk-cyber.github.io/escape-room-bot/puzzles"
+
 
 ROOMS = {
     "intro": {
@@ -22,10 +24,7 @@ ROOMS = {
         "image_url": "https://i.ibb.co/PZQ4xSs0/02-intro-susurro.jpg",
         "hint": "Pulsa Entrar al castillo para comenzar.",
         "buttons": [
-            {
-                "label": "🚪 Entrar al castillo",
-                "to_room": "entrada",
-            },
+            {"label": "🚪 Entrar al castillo", "to_room": "entrada"},
         ],
     },
 
@@ -46,14 +45,8 @@ ROOMS = {
         "image_url": "https://i.ibb.co/ks895ZH5/03-entrada.jpg",
         "hint": "Explora la muralla antes de entrar.",
         "buttons": [
-            {
-                "label": "🚪 Empujar la puerta",
-                "to_room": "patio",
-            },
-            {
-                "label": "🕯️ Examinar la muralla",
-                "to_room": "muralla",
-            },
+            {"label": "🚪 Empujar la puerta", "to_room": "patio"},
+            {"label": "🕯️ Examinar la muralla", "to_room": "muralla"},
         ],
     },
 
@@ -74,20 +67,9 @@ ROOMS = {
         "image_url": "https://i.ibb.co/zVPxTSvN/04-muralla.jpg",
         "hint": "Si tienes la antorcha, prueba a iluminar las piedras.",
         "buttons": [
-            {
-                "label": "⬅️ Volver a la entrada",
-                "to_room": "entrada",
-            },
-            {
-                "label": "🔥 Iluminar las piedras con la antorcha",
-                "callback": "diary:get:pagina_reina",
-                "requires_flag": "antorcha",
-                "hide_if_flag": "pagina_reina",
-            },
-            {
-                "label": "👣 Seguir un ruido extraño",
-                "to_room": "patio",
-            },
+            {"label": "⬅️ Volver a la entrada", "to_room": "entrada"},
+            {"label": "🔥 Iluminar las piedras con la antorcha", "callback": "diary:get:pagina_reina", "requires_flag": "antorcha", "hide_if_flag": "pagina_reina"},
+            {"label": "👣 Seguir un ruido extraño", "to_room": "patio"},
         ],
     },
 
@@ -109,25 +91,10 @@ ROOMS = {
         "image_url": "https://i.ibb.co/bSbMtKv/05-patio.jpg",
         "hint": "Busca en la fuente para abrir la torre.",
         "buttons": [
-            {
-                "label": "⬅️ Volver a la entrada",
-                "to_room": "entrada",
-            },
-            {
-                "label": "🔍 Buscar en la fuente",
-                "callback": "flag:llave_oxidada",
-                "hide_if_flag": "llave_oxidada",
-            },
-            {
-                "label": "🗼 Abrir la puerta de la torre",
-                "to_room": "torre",
-                "requires_flag": "llave_oxidada",
-            },
-            {
-                "label": "🕯️ Bajar a la cripta",
-                "to_room": "cripta",
-                "requires_flag": "antorcha",
-            },
+            {"label": "⬅️ Volver a la entrada", "to_room": "entrada"},
+            {"label": "🔍 Buscar en la fuente", "callback": "flag:llave_oxidada", "hide_if_flag": "llave_oxidada"},
+            {"label": "🗼 Abrir la puerta de la torre", "to_room": "torre", "requires_flag": "llave_oxidada"},
+            {"label": "🕯️ Bajar a la cripta", "to_room": "cripta", "requires_flag": "antorcha"},
         ],
     },
 
@@ -143,26 +110,36 @@ ROOMS = {
             "<i>\"Malachar escondió la verdad en los espejos. "
             "El sello del heredero abrirá la capilla donde descansa la corona.\"</i>\n\n"
             "Y debajo, con letra más serena:\n\n"
-            "<i>\"Malachar no sabía que el rey tenía un heredero. Ese es su error.\"</i>"
+            "<i>\"Malachar no sabía que el rey tenía un heredero. Ese es su error.\"</i>\n\n"
+            "Sobre el escritorio, un extraño aparato de ruedas dentadas espera ser girado."
         ),
         "image_url": "https://i.ibb.co/zWFn9vJW/06-torre.jpg",
-        "hint": "Enciende la antorcha.",
+        "hint": "Enciende la antorcha. Prueba el cifrador de Malachar.",
         "buttons": [
-            {
-                "label": "🔥 Encender la antorcha",
-                "callback": "flag:antorcha",
-                "hide_if_flag": "antorcha",
-            },
-            {
-                "label": "📖 Examinar las notas de Malachar",
-                "callback": "diary:get:pagina_malachar",
-                "hide_if_flag": "pagina_malachar",
-            },
-            {
-                "label": "⬅️ Volver al patio",
-                "to_room": "patio",
-            },
+            {"label": "🔥 Encender la antorcha", "callback": "flag:antorcha", "hide_if_flag": "antorcha"},
+            {"label": "📖 Examinar las notas de Malachar", "callback": "diary:get:pagina_malachar", "hide_if_flag": "pagina_malachar"},
+            {"label": "🔗 Abrir el cifrador de Malachar", "url": f"{PUZZLES_BASE}/caja.html"},
+            {"label": "🔑 Decir la palabra descifrada", "callback": "code:caja_codigo", "hide_if_flag": "secreto_de_malachar"},
+            {"label": "⬅️ Volver al patio", "to_room": "patio"},
         ],
+        "puzzles": {
+            "caja_codigo": {
+                "prompt": (
+                    "Escribe la palabra que el cifrador de Malachar reveló.\n\n"
+                    "<i>Pista: gira la rueda hasta que el texto tenga sentido.</i>"
+                ),
+                "answers": ["HUESO"],
+                "success_flag": "secreto_de_malachar",
+                "success_text": (
+                    "✅ <b>HUESO.</b>\n\n"
+                    "La palabra encaja en el aparato como una llave.\n\n"
+                    "<i>\"La llave que abre la última puerta está tallada en hueso. "
+                    "El rey la guarda con su propia mano.\"</i>\n\n"
+                    "<b>Has ganado el sello de Malachar.</b>"
+                ),
+                "error_text": "❌ <b>El aparato no reacciona.</b>\n\n<i>Esa no es la palabra.</i>",
+            },
+        },
     },
 
     "cripta": {
@@ -180,22 +157,13 @@ ROOMS = {
             "Sobre una lápida hay una hendidura donde se puede introducir un código."
         ),
         "image_url": "https://i.ibb.co/wFCQ1B2P/07-cripta.jpg",
-        "hint": "Lee atentamente el texto. La respuesta está en él.",
+        "hint": "Lee el texto para la lápida. Examina los nichos para el conteo.",
         "buttons": [
-            {
-                "label": "🔑 Introducir código",
-                "callback": "code:cripta_codigo",
-                "hide_if_flag": "camara_secreta_desbloqueada",
-            },
-            {
-                "label": "🕳️ Entrar a la cámara secreta",
-                "to_room": "camara_secreta",
-                "requires_flag": "camara_secreta_desbloqueada",
-            },
-            {
-                "label": "⬅️ Volver al patio",
-                "to_room": "patio",
-            },
+            {"label": "🔑 Introducir código", "callback": "code:cripta_codigo", "hide_if_flag": "camara_secreta_desbloqueada"},
+            {"label": "🔗 Examinar los nichos", "url": f"{PUZZLES_BASE}/cripta.html"},
+            {"label": "🔑 Introducir el conteo", "callback": "code:cripta_contar", "hide_if_flag": "conteo_de_la_cripta"},
+            {"label": "🕳️ Entrar a la cámara secreta", "to_room": "camara_secreta", "requires_flag": "camara_secreta_desbloqueada"},
+            {"label": "⬅️ Volver al patio", "to_room": "patio"},
         ],
         "puzzles": {
             "cripta_codigo": {
@@ -204,15 +172,26 @@ ROOMS = {
                     "<i>Pista: Tres nichos fueron profanados. Tres almas no descansan. "
                     "Tres veces su número abrirá la cámara secreta.</i>"
                 ),
-                "answers": [
-                    "333",
-                ],
+                "answers": ["333"],
                 "success_flag": "camara_secreta_desbloqueada",
                 "success_room": "camara_secreta",
-                "error_text": (
-                    "❌ <b>El código no es válido.</b>\n\n"
-                    "<i>La cripta sigue en silencio.</i>"
+                "error_text": "❌ <b>El código no es válido.</b>\n\n<i>La cripta sigue en silencio.</i>",
+            },
+            "cripta_contar": {
+                "prompt": (
+                    "Escribe el conteo de los nichos: velas, calaveras y llaves, seguidos.\n\n"
+                    "<i>Pista: examina los nichos y cuenta con cuidado.</i>"
                 ),
+                "answers": ["357"],
+                "success_flag": "conteo_de_la_cripta",
+                "success_text": (
+                    "✅ <b>El conteo es correcto.</b>\n\n"
+                    "Al pronunciar los números, las velas de la cripta parpadean al unísono.\n\n"
+                    "<i>\"Los sirvientes guardaban tres llaves. "
+                    "Una de ellas aún espera en el patio, bajo la fuente seca.\"</i>\n\n"
+                    "<b>Has ganado el sello de los sirvientes.</b>"
+                ),
+                "error_text": "❌ <b>El conteo no coincide.</b>\n\n<i>Vuelve a examinar los nichos.</i>",
             },
         },
     },
@@ -236,25 +215,10 @@ ROOMS = {
         "image_url": "https://i.ibb.co/MxWbZBDj/08-camara-secreta.jpg",
         "hint": "Cuenta las marcas del prisionero. Su último número abrirá el pasadizo.",
         "buttons": [
-            {
-                "label": "🔑 Introducir código",
-                "callback": "code:camara_codigo",
-                "hide_if_flag": "pasillo_espejos_desbloqueado",
-            },
-            {
-                "label": "📖 Leer las marcas de la pared",
-                "callback": "diary:get:pagina_rey",
-                "hide_if_flag": "pagina_rey",
-            },
-            {
-                "label": "🕳️ Seguir el pasadizo",
-                "to_room": "pasillo_de_los_espejos",
-                "requires_flag": "pasillo_espejos_desbloqueado",
-            },
-            {
-                "label": "⬅️ Volver a la cripta",
-                "to_room": "cripta",
-            },
+            {"label": "🔑 Introducir código", "callback": "code:camara_codigo", "hide_if_flag": "pasillo_espejos_desbloqueado"},
+            {"label": "📖 Leer las marcas de la pared", "callback": "diary:get:pagina_rey", "hide_if_flag": "pagina_rey"},
+            {"label": "🕳️ Seguir el pasadizo", "to_room": "pasillo_de_los_espejos", "requires_flag": "pasillo_espejos_desbloqueado"},
+            {"label": "⬅️ Volver a la cripta", "to_room": "cripta"},
         ],
         "puzzles": {
             "camara_codigo": {
@@ -263,15 +227,10 @@ ROOMS = {
                     "<i>Pista: Cuarenta y dos marcas antes de perder la razón. "
                     "Su último número abrirá el pasadizo.</i>"
                 ),
-                "answers": [
-                    "42",
-                ],
+                "answers": ["42"],
                 "success_flag": "pasillo_espejos_desbloqueado",
                 "success_room": "pasillo_de_los_espejos",
-                "error_text": (
-                    "❌ <b>La losa no se mueve.</b>\n\n"
-                    "<i>El número no es correcto.</i>"
-                ),
+                "error_text": "❌ <b>La losa no se mueve.</b>\n\n<i>El número no es correcto.</i>",
             },
         },
     },
@@ -293,27 +252,33 @@ ROOMS = {
             "Entre los fragmentos de vidrio, algo brilla."
         ),
         "image_url": "https://i.ibb.co/rR4NvPxm/09-pasillo-espejos.jpg",
-        "hint": "Busca un sello real entre los espejos. La figura del espejo quizá quiera hablar.",
+        "hint": "Busca un sello real. Habla con el reflejo. Mira el espejo de Malachar.",
         "buttons": [
-            {
-                "label": "⬅️ Volver a la cámara secreta",
-                "to_room": "camara_secreta",
-            },
-            {
-                "label": "👻 Hablar con el reflejo",
-                "callback": "talk:reina:start",
-            },
-            {
-                "label": "👑 Recoger sello real",
-                "callback": "flag:sello_real",
-                "hide_if_flag": "sello_real",
-            },
-            {
-                "label": "⛪ Entrar en la capilla",
-                "to_room": "capilla",
-                "requires_flag": "sello_real",
-            },
+            {"label": "⬅️ Volver a la cámara secreta", "to_room": "camara_secreta"},
+            {"label": "👻 Hablar con el reflejo", "callback": "talk:reina:start"},
+            {"label": "🔗 Mirar el espejo de Malachar", "url": f"{PUZZLES_BASE}/espejo.html"},
+            {"label": "🔑 Decir la palabra del espejo", "callback": "code:espejo_codigo", "hide_if_flag": "verdad_del_espejo"},
+            {"label": "👑 Recoger sello real", "callback": "flag:sello_real", "hide_if_flag": "sello_real"},
+            {"label": "⛪ Entrar en la capilla", "to_room": "capilla", "requires_flag": "sello_real"},
         ],
+        "puzzles": {
+            "espejo_codigo": {
+                "prompt": (
+                    "Di la palabra que el espejo de Malachar muestra al revés.\n\n"
+                    "<i>Pista: sostén el espejo para leerla.</i>"
+                ),
+                "answers": ["REFLEJO"],
+                "success_flag": "verdad_del_espejo",
+                "success_text": (
+                    "✅ <b>REFLEJO.</b>\n\n"
+                    "Al pronunciarla, todos los espejos del pasillo se encienden a la vez.\n\n"
+                    "<i>\"Los espejos no mienten: muestran a los que quedaron atrapados. "
+                    "Y tú... tú no estás atrapado todavía.\"</i>\n\n"
+                    "<b>Has ganado el sello de los espejos.</b>"
+                ),
+                "error_text": "❌ <b>Los espejos se apagan.</b>\n\n<i>Esa no es la palabra.</i>",
+            },
+        },
     },
 
     "capilla": {
@@ -335,34 +300,12 @@ ROOMS = {
         "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
         "hint": "Observa la corona para el código. Lee bien las inscripciones.",
         "buttons": [
-            {
-                "label": "🔗 Abrir puzle web",
-                "url": "https://i.ibb.co/jP1j4r2x/1348.jpg",
-            },
-            {
-                "label": "🔑 Introducir código",
-                "callback": "code:capilla_codigo",
-                "hide_if_flag": "salon_trono_desbloqueado",
-            },
-            {
-                "label": "👑 Tomar la corona rota",
-                "callback": "flag:corona",
-                "hide_if_flag": "corona",
-            },
-            {
-                "label": "🕯️ Entrar a la cámara de la reina",
-                "to_room": "camara_de_la_reina",
-                "requires_flags": ["pagina_reina", "pagina_rey", "pagina_malachar"],
-            },
-            {
-                "label": "👑 Entrar al salón del trono",
-                "to_room": "salon_trono",
-                "requires_flag": "salon_trono_desbloqueado",
-            },
-            {
-                "label": "⬅️ Volver al pasillo",
-                "to_room": "pasillo_de_los_espejos",
-            },
+            {"label": "🔗 Abrir puzle web", "url": "https://i.ibb.co/jP1j4r2x/1348.jpg"},
+            {"label": "🔑 Introducir código", "callback": "code:capilla_codigo", "hide_if_flag": "salon_trono_desbloqueado"},
+            {"label": "👑 Tomar la corona rota", "callback": "flag:corona", "hide_if_flag": "corona"},
+            {"label": "🕯️ Entrar a la cámara de la reina", "to_room": "camara_de_la_reina", "requires_flags": ["pagina_reina", "pagina_rey", "pagina_malachar"]},
+            {"label": "👑 Entrar al salón del trono", "to_room": "salon_trono", "requires_flag": "salon_trono_desbloqueado"},
+            {"label": "⬅️ Volver al pasillo", "to_room": "pasillo_de_los_espejos"},
         ],
         "puzzles": {
             "capilla_codigo": {
@@ -371,15 +314,10 @@ ROOMS = {
                     "<i>Pista: El código está grabado en la corona. "
                     "Pulsa el botón 'Abrir puzle web' para observar la corona de cerca.</i>"
                 ),
-                "answers": [
-                    "1348",
-                ],
+                "answers": ["1348"],
                 "success_flag": "salon_trono_desbloqueado",
                 "success_room": "salon_trono",
-                "error_text": (
-                    "❌ <b>La capilla no acepta ese código.</b>\n\n"
-                    "<i>Las velas parpadean con fuerza.</i>"
-                ),
+                "error_text": "❌ <b>La capilla no acepta ese código.</b>\n\n<i>Las velas parpadean con fuerza.</i>",
             },
         },
     },
@@ -398,31 +336,14 @@ ROOMS = {
         "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
         "hint": "La primera palabra que la reina escribió en su página del diario.",
         "buttons": [
-            {
-                "label": "🕯️ Miedo",
-                "callback": "choice:espejo_reina:MIEDO",
-                "hide_if_flag": "bendicion_reina",
-            },
-            {
-                "label": "👑 Corona",
-                "callback": "choice:espejo_reina:CORONA",
-                "hide_if_flag": "bendicion_reina",
-            },
-            {
-                "label": "💗 Recuerda",
-                "callback": "choice:espejo_reina:RECUERDA",
-                "hide_if_flag": "bendicion_reina",
-            },
-            {
-                "label": "⬅️ Volver a la capilla",
-                "to_room": "capilla",
-            },
+            {"label": "🕯️ Miedo", "callback": "choice:espejo_reina:MIEDO", "hide_if_flag": "bendicion_reina"},
+            {"label": "👑 Corona", "callback": "choice:espejo_reina:CORONA", "hide_if_flag": "bendicion_reina"},
+            {"label": "💗 Recuerda", "callback": "choice:espejo_reina:RECUERDA", "hide_if_flag": "bendicion_reina"},
+            {"label": "⬅️ Volver a la capilla", "to_room": "capilla"},
         ],
         "puzzles": {
             "espejo_reina": {
-                "answers": [
-                    "RECUERDA",
-                ],
+                "answers": ["RECUERDA"],
                 "success_flag": "bendicion_reina",
                 "success_text": (
                     "✅ <b>El espejo se enciende.</b>\n\n"
@@ -431,10 +352,7 @@ ROOMS = {
                     "Llévalo contigo, heredero.\"</i>\n\n"
                     "<b>Has recibido la bendición de la reina.</b>"
                 ),
-                "error_text": (
-                    "❌ <b>El espejo permanece frío.</b>\n\n"
-                    "<i>Esa no es la palabra que grabé.</i>"
-                ),
+                "error_text": "❌ <b>El espejo permanece frío.</b>\n\n<i>Esa no es la palabra que grabé.</i>",
             },
         },
     },
@@ -459,30 +377,11 @@ ROOMS = {
         "image_url": "https://i.ibb.co/kscGLHh6/11-salon-trono.jpg",
         "hint": "El rey te hará una pregunta. Recuerda las inscripciones que has visto.",
         "buttons": [
-            {
-                "label": "🗝️ Escuchar la pregunta del rey",
-                "callback": "code:salon_acertijo",
-                "hide_if_flag": "llave_hueso",
-            },
-            {
-                "label": "👑 Escapar con la corona",
-                "to_room": "salida_tesoro",
-                "requires_flags": ["llave_hueso", "corona"],
-            },
-            {
-                "label": "🚪 Abrir la puerta final",
-                "to_room": "salida",
-                "requires_flag": "llave_hueso",
-            },
-            {
-                "label": "⭐ Abrazar al rey",
-                "to_room": "salida_secreta",
-                "requires_flags": ["llave_hueso", "pagina_reina", "pagina_rey", "pagina_malachar"],
-            },
-            {
-                "label": "⬅️ Volver a la capilla",
-                "to_room": "capilla",
-            },
+            {"label": "🗝️ Escuchar la pregunta del rey", "callback": "code:salon_acertijo", "hide_if_flag": "llave_hueso"},
+            {"label": "👑 Escapar con la corona", "to_room": "salida_tesoro", "requires_flags": ["llave_hueso", "corona"]},
+            {"label": "🚪 Abrir la puerta final", "to_room": "salida", "requires_flag": "llave_hueso"},
+            {"label": "⭐ Abrazar al rey", "to_room": "salida_secreta", "requires_flags": ["llave_hueso", "pagina_reina", "pagina_rey", "pagina_malachar"]},
+            {"label": "⬅️ Volver a la capilla", "to_room": "capilla"},
         ],
         "puzzles": {
             "salon_acertijo": {
@@ -494,11 +393,7 @@ ROOMS = {
                     "Pero había una prisión de la que ni él pudo liberarme. "
                     "Recuerda las palabras grabadas en la base del altar de la capilla.\"</i>"
                 ),
-                "answers": [
-                    "MIEDO",
-                    "SOMBRA",
-                    "MUERTE",
-                ],
+                "answers": ["MIEDO", "SOMBRA", "MUERTE"],
                 "success_flag": "llave_hueso",
                 "success_text": (
                     "✅ <b>El rey asiente lentamente.</b>\n\n"
@@ -535,10 +430,7 @@ ROOMS = {
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has escapado. Puedes usar /reiniciar para jugar de nuevo.",
         "buttons": [
-            {
-                "label": "🔄 Volver a la entrada",
-                "to_room": "entrada",
-            },
+            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
         ],
     },
 
@@ -558,10 +450,7 @@ ROOMS = {
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has conseguido el final del tesoro. Prueba /reiniciar para ver el otro final.",
         "buttons": [
-            {
-                "label": "🔄 Volver a la entrada",
-                "to_room": "entrada",
-            },
+            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
         ],
     },
 
@@ -594,10 +483,7 @@ ROOMS = {
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has encontrado el final verdadero. Usa /reiniciar para probar los otros finales.",
         "buttons": [
-            {
-                "label": "🔄 Volver a la entrada",
-                "to_room": "entrada",
-            },
+            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
         ],
     },
 }
@@ -611,7 +497,7 @@ DIALOGUES = {
                 "El reflejo de la reina te mira desde el espejo roto.\n\n"
                 "<i>\"Heredero... al fin te veo con claridad.\"</i>"
             ),
-            "image_url": "https://i.ibb.co/tM4PGmnP/13-espejo-reina.jpghttps://i.ibb.co/tM4PGmnP/13-espejo-reina.jpg",
+            "image_url": "https://i.ibb.co/tM4PGmnP/13-espejo-reina.jpg",
             "options": [
                 {"label": "¿Quién eres?", "to": "quien"},
                 {"label": "¿Cómo rompo la maldición?", "to": "maldicion"},

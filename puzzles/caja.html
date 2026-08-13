@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El cifrador de Malachar</title>
+<style>body{background:#0b0d12;color:#d8d4c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+#out{font-size:2em;letter-spacing:.2em;border:2px solid #3a3f4a;padding:16px 26px;background:#11141b;margin:16px 0}
+input{width:80%}</style></head>
+<body>
+<h2>🔐 El cifrador de Malachar</h2>
+<p>Malachar cifró una palabra girando el alfabeto.<br>Mueve la rueda hasta que el texto tenga sentido.</p>
+<div id="cipher">KXHVR</div>
+<input type="range" id="r" min="0" max="25" value="0">
+<div id="out">KXHVR</div>
+<p><i>Cuando leas una palabra real, escríbela al bot en Telegram.</i></p>
+<script>
+var C='KXHVR',r=document.getElementById('r'),o=document.getElementById('out');
+function dec(s){var t='';for(var i=0;i<C.length;i++){var c=C.charCodeAt(i)-65-s;c=((c%26)+26)%26;t+=String.fromCharCode(c+65)}return t}
+r.addEventListener('input',function(){o.textContent=dec(+r.value)});
+</script>
+</body></html>
