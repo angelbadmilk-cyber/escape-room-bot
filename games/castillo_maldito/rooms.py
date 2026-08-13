@@ -332,7 +332,7 @@ ROOMS = {
             "<i>\"Tres veces me nombraron, pero solo una palabra me devuelve. "
             "Elige la palabra que grabé en mi espejo y recibirás mi bendición.\"</i>"
         ),
-        "image_url": "https://i.ibb.co/WNrVDRj4/10-capilla.jpg",
+        "image_url": "https://i.ibb.co/jPdzmjgv/14-camara-reina.jpg",
         "hint": "La primera palabra que la reina escribió en su página del diario.",
         "buttons": [
             {"label": "🕯️ Miedo", "callback": "choice:espejo_reina:MIEDO", "hide_if_flag": "bendicion_reina"},
@@ -426,7 +426,7 @@ ROOMS = {
             "La esfera se eleva y se acerca a tu mano. Está caliente.\n\n"
             "<i>Tocar el corazón del castillo te mostrará su última puerta.</i>"
         ),
-        "image_url": "https://i.ibb.co/MxWbZBDj/08-camara-secreta.jpg",
+        "image_url": "https://i.ibb.co/C3W36F9p/15-camara-sellos.jpg",
         "hint": "Has reunido los tres sellos. Toca el corazón.",
         "buttons": [
             {"label": "💗 Tocar el corazón del castillo", "to_room": "salida_sellos"},
