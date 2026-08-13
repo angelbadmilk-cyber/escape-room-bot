@@ -23,9 +23,7 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/PZQ4xSs0/02-intro-susurro.jpg",
         "hint": "Pulsa Entrar al castillo para comenzar.",
-        "buttons": [
-            {"label": "🚪 Entrar al castillo", "to_room": "entrada"},
-        ],
+        "buttons": [{"label": "🚪 Entrar al castillo", "to_room": "entrada"}],
     },
 
     "entrada": {
@@ -126,7 +124,7 @@ ROOMS = {
             "caja_codigo": {
                 "prompt": (
                     "Escribe la palabra que el cifrador de Malachar reveló.\n\n"
-                    "<i>Pista: gira la rueda hasta que el texto tenga sentido.</i>"
+                    "<i>Pista: la rueda está girada tantas posiciones como letras tiene REY.</i>"
                 ),
                 "answers": ["HUESO"],
                 "success_flag": "secreto_de_malachar",
@@ -179,10 +177,11 @@ ROOMS = {
             },
             "cripta_contar": {
                 "prompt": (
-                    "Escribe el conteo de los nichos: velas, calaveras y llaves, seguidos.\n\n"
+                    "Escribe el conteo de los nichos en el orden indicado:\n"
+                    "<b>llaves, velas, calaveras</b>.\n\n"
                     "<i>Pista: examina los nichos y cuenta con cuidado.</i>"
                 ),
-                "answers": ["357"],
+                "answers": ["735"],
                 "success_flag": "conteo_de_la_cripta",
                 "success_text": (
                     "✅ <b>El conteo es correcto.</b>\n\n"
@@ -265,7 +264,7 @@ ROOMS = {
             "espejo_codigo": {
                 "prompt": (
                     "Di la palabra que el espejo de Malachar muestra al revés.\n\n"
-                    "<i>Pista: sostén el espejo para leerla.</i>"
+                    "<i>Pista: léela del espejo; solo tienes 3 letras de ayuda.</i>"
                 ),
                 "answers": ["REFLEJO"],
                 "success_flag": "verdad_del_espejo",
@@ -378,6 +377,7 @@ ROOMS = {
         "hint": "El rey te hará una pregunta. Recuerda las inscripciones que has visto.",
         "buttons": [
             {"label": "🗝️ Escuchar la pregunta del rey", "callback": "code:salon_acertijo", "hide_if_flag": "llave_hueso"},
+            {"label": "🔓 Abrir la cámara de los sellos", "to_room": "camara_de_los_sellos", "requires_flags": ["verdad_del_espejo", "conteo_de_la_cripta", "secreto_de_malachar"]},
             {"label": "👑 Escapar con la corona", "to_room": "salida_tesoro", "requires_flags": ["llave_hueso", "corona"]},
             {"label": "🚪 Abrir la puerta final", "to_room": "salida", "requires_flag": "llave_hueso"},
             {"label": "⭐ Abrazar al rey", "to_room": "salida_secreta", "requires_flags": ["llave_hueso", "pagina_reina", "pagina_rey", "pagina_malachar"]},
@@ -411,6 +411,56 @@ ROOMS = {
         },
     },
 
+    "camara_de_los_sellos": {
+        "title": "La cámara de los sellos",
+        "text": (
+            "Tres cerraduras de hueso giran a la vez.\n\n"
+            "La puerta se abre revelando una cámara diminuta que no debería existir. "
+            "Las paredes están cubiertas de los mismos espejos del pasillo, "
+            "pero aquí todos reflejan lo mismo: a ti, sosteniendo tres sellos que brillan.\n\n"
+            "En el centro, sobre un cojín de terciopelo negro, descansa un objeto imposible:\n\n"
+            "<b>El corazón del castillo.</b>\n\n"
+            "Una pequeña esfera de piedra que late, muy despacio, como un corazón dormido.\n\n"
+            "<i>\"Quien reúne los tres sellos demuestra que observa, que cuenta y que descifra. "
+            "Ese no vino a escapar. Vino a entender.\"</i>\n\n"
+            "La esfera se eleva y se acerca a tu mano. Está caliente.\n\n"
+            "<i>Tocar el corazón del castillo te mostrará su última puerta.</i>"
+        ),
+        "image_url": "https://i.ibb.co/MxWbZBDj/08-camara-secreta.jpg",
+        "hint": "Has reunido los tres sellos. Toca el corazón.",
+        "buttons": [
+            {"label": "💗 Tocar el corazón del castillo", "to_room": "salida_sellos"},
+            {"label": "⬅️ Volver al salón del trono", "to_room": "salon_trono"},
+        ],
+    },
+
+    "salida_sellos": {
+        "title": "El final del que entiende",
+        "text": (
+            "Tocas la esfera.\n\n"
+            "El mundo se dobla.\n\n"
+            "De pronto no estás en el castillo: estás <b>fuera</b>, mirándolo desde la colina, "
+            "bajo la tormenta. Pero lo ves como nunca nadie lo ha visto.\n\n"
+            "Ves los cimientos de hueso. Ves las cadenas que Malachar tejió. "
+            "Ves al rey, a la reina, a los sirvientes, a Malachar: "
+            "no como fantasmas, sino como recuerdos que el castillo guarda con cariño.\n\n"
+            "Y comprendes la verdad que nadie quiso ver:\n\n"
+            "<i>El castillo nunca fue una prisión para los vivos. "
+            "Fue un refugio para los que no podían irse.</i>\n\n"
+            "La maldición no atrapaba: <b>protegía</b>.\n\n"
+            "Cuando el amanecer llega, el castillo se desmorona en silencio, "
+            "no con estruendo, sino con alivio, como un viejo que por fin duerme.\n\n"
+            "En tu mano queda una única piedra tibia. Ya no late. Ya no hace falta.\n\n"
+            "<b>Has conseguido el final del que entiende.</b>\n\n"
+            "<i>Este era el cuarto final. Gracias por mirar de cerca.</i>"
+        ),
+        "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
+        "hint": "Has visto el final oculto. Usa /reiniciar para probar los demás.",
+        "buttons": [
+            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
+        ],
+    },
+
     "salida": {
         "title": "El final del castillo",
         "text": (
@@ -429,9 +479,7 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has escapado. Puedes usar /reiniciar para jugar de nuevo.",
-        "buttons": [
-            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
-        ],
+        "buttons": [{"label": "🔄 Volver a la entrada", "to_room": "entrada"}],
     },
 
     "salida_tesoro": {
@@ -449,9 +497,7 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has conseguido el final del tesoro. Prueba /reiniciar para ver el otro final.",
-        "buttons": [
-            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
-        ],
+        "buttons": [{"label": "🔄 Volver a la entrada", "to_room": "entrada"}],
     },
 
     "salida_secreta": {
@@ -482,9 +528,7 @@ ROOMS = {
         ),
         "image_url": "https://i.ibb.co/76FGGr7/12-salida.jpg",
         "hint": "Has encontrado el final verdadero. Usa /reiniciar para probar los otros finales.",
-        "buttons": [
-            {"label": "🔄 Volver a la entrada", "to_room": "entrada"},
-        ],
+        "buttons": [{"label": "🔄 Volver a la entrada", "to_room": "entrada"}],
     },
 }
 

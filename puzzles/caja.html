@@ -1,32 +1,26 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>El cifrador de Malachar</title>
-<style>
-body{background:#0b0d12;color:#d8d4c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
-#cipher{font-size:1.4em;letter-spacing:.2em;color:#8a8f9a}
-#out{font-size:2.2em;letter-spacing:.2em;border:2px solid #3a3f4a;padding:16px 26px;background:#11141b;margin:18px 0;min-height:1.2em}
+<style>body{background:#0b0d12;color:#d8d4c8;font-family:Georgia,serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;text-align:center;padding:20px}
+#cipher{font-size:1.8em;letter-spacing:.2em;border:2px solid #3a3f4a;padding:14px 24px;background:#11141b;margin:14px 0}
 .row{display:flex;gap:18px;align-items:center}
-button{padding:16px 24px;background:#2a2f3a;color:#e8e4d8;border:1px solid #555;border-radius:12px;font-size:1.5em}
-#n{font-size:1.5em;min-width:2ch}
-</style></head>
+button{padding:14px 22px;background:#2a2f3a;color:#e8e4d8;border:1px solid #555;border-radius:10px;font-size:1.3em}
+#n{font-size:1.4em;min-width:2ch}
+#out{font-size:1.6em;margin-top:16px;min-height:1.2em}</style></head>
 <body>
 <h2>🔐 El cifrador de Malachar</h2>
-<p>Gira la rueda con los botones ◀ ▶ hasta que el texto tenga sentido.</p>
+<p>La rueda está girada tantas posiciones como <b>letras tiene la palabra REY</b>.<br>Ajusta el giro y abre.</p>
 <div id="cipher">KXHVR</div>
-<div class="row">
-<button id="less">◀</button>
-<span id="n">0</span>
-<button id="more">▶</button>
-</div>
-<div id="out">KXHVR</div>
-<p><i>Cuando leas una palabra real, escríbela al bot en Telegram.</i></p>
+<div class="row"><button id="less">◀</button><span id="n">0</span><button id="more">▶</button></div>
+<button id="open">🔓 Abrir</button>
+<div id="out"></div>
+<p><i>Si lees una palabra real, escríbela al bot en Telegram.</i></p>
 <script>
 var C='KXHVR',s=0;
-var out=document.getElementById('out'),n=document.getElementById('n');
+var n=document.getElementById('n'),o=document.getElementById('out');
 function dec(k){var t='';for(var i=0;i<C.length;i++){var c=C.charCodeAt(i)-65-k;c=((c%26)+26)%26;t+=String.fromCharCode(c+65)}return t}
-function upd(){out.textContent=dec(s);n.textContent=s}
-document.getElementById('less').onclick=function(){s=(s+25)%26;upd()};
-document.getElementById('more').onclick=function(){s=(s+1)%26;upd()};
-upd();
+document.getElementById('less').onclick=function(){s=(s+25)%26;n.textContent=s};
+document.getElementById('more').onclick=function(){s=(s+1)%26;n.textContent=s};
+document.getElementById('open').onclick=function(){o.textContent=(s==3)?dec(3):'🔒 La caja sigue cerrada.'};
 </script>
 </body></html>
