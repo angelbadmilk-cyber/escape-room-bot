@@ -133,6 +133,16 @@ def _clear_waiting_code(context: ContextTypes.DEFAULT_TYPE) -> None:
     context.user_data.pop("waiting_code", None)
 
 
+def _back_to_room_keyboard(context: ContextTypes.DEFAULT_TYPE) -> InlineKeyboardMarkup:
+    game_id = context.user_data.get("current_game") if context.user_data else None
+    room_id = context.user_data.get("current_room") if context.user_data else None
+    game = get_game_by_id(game_id) if game_id else None
+    game_code = game.get("code", "") if game else ""
+    return InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⬅️ Volver", callback_data=f"play:{game_code}:{room_id}")]]
+    )
+
+
 async def _castle_thinks(context: ContextTypes.DEFAULT_TYPE, chat_id) -> None:
     if not chat_id:
         return
@@ -601,7 +611,6 @@ async def _handle_talk_callback(query, context, npc_key: str, node_key: str) -> 
 
     markup = InlineKeyboardMarkup(keyboard)
 
-    # Si el nodo tiene imagen válida, mostrar imagen; si no, solo texto.
     if image_url and not str(image_url).startswith("PEGA"):
         await _render_photo_for_query(query, context, image_url, text, markup)
     else:
@@ -713,7 +722,7 @@ async def text_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                     return
 
         success_text = puzzle.get("success_text", "✅ <b>Código correcto.</b>")
-        await _edit_or_send_ui_message(update, context, success_text, back_to_menu_keyboard())
+        await _edit_or_send_ui_message(update, context, success_text, _back_to_room_keyboard(context))
 
     else:
         error_text = puzzle.get("error_text", "❌ <b>Código incorrecto.</b>")
